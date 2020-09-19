@@ -1,0 +1,7 @@
+domain: unisinos
+repo: github.com/juliorenner/oai-k8s/operator
+resources:
+- group: oai
+  kind: Split
+  version: v1beta1
+version: "2"
