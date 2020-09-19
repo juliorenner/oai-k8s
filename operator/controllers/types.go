@@ -1,6 +1,10 @@
 package controllers
 
-import "time"
+import (
+	"time"
+
+	v1 "k8s.io/api/core/v1"
+)
 
 const (
 	ResyncPeriod = 20 * time.Second
@@ -39,12 +43,30 @@ type ruContent struct {
 	NorthAddress string
 }
 
-var Empty struct{}
+type port struct {
+	number   int32
+	protocol v1.Protocol
+}
+
+var SplitPorts = map[SplitPiece][]port{
+	CU: {{501, v1.ProtocolUDP}, {601, v1.ProtocolUDP}, {2152, v1.ProtocolUDP},
+		{36412, v1.ProtocolUDP}, {36422, v1.ProtocolUDP}, {30923, v1.ProtocolUDP},
+		{37659, v1.ProtocolTCP}},
+	DU: {{500, v1.ProtocolUDP}, {600, v1.ProtocolUDP}, {30923, v1.ProtocolUDP},
+		{34878, v1.ProtocolUDP}, {45501, v1.ProtocolTCP}, {50001, v1.ProtocolUDP},
+		{50011, v1.ProtocolUDP}},
+	RU: {{8888, v1.ProtocolUDP}, {9999, v1.ProtocolUDP}, {10000, v1.ProtocolUDP},
+		{32123, v1.ProtocolUDP}, {38927, v1.ProtocolTCP}, {50000, v1.ProtocolUDP},
+		{50010, v1.ProtocolUDP}, {58363, v1.ProtocolUDP}},
+}
+
 var TemplateConfigMaps = map[SplitPiece]string{
 	CU: CUTemplateConfigMapName,
 	DU: DUTemplateConfigMapName,
 	RU: RUTemplateConfigMapName,
 }
+
+var Empty struct{}
 
 var Splits = NewStringSet(
 	string(CU),

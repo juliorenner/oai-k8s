@@ -323,7 +323,7 @@ func (r *SplitReconciler) getDUConfigMapContent(instance *oaiv1beta1.Split) (str
 }
 
 func (r *SplitReconciler) getRUConfigMapContent(instance *oaiv1beta1.Split) (string, error) {
-	cmContent := &duContent{}
+	cmContent := &ruContent{}
 
 	duPod := &v1.Pod{}
 	exists, err := r.getDUPod(instance, duPod)
@@ -447,7 +447,7 @@ func getResourceName(instance *oaiv1beta1.Split, split SplitPiece) string {
 
 func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.Deployment {
 	objectKey := getSplitObjectKey(instance, split)
-	labels := map[string]string{
+	podLabels := map[string]string{
 		"split":       string(split),
 		"split-owner": instance.Name,
 	}
@@ -458,11 +458,11 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 		},
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
-				MatchLabels: labels,
+				MatchLabels: podLabels,
 			},
 			Template: v1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Labels: labels,
+					Labels: podLabels,
 				},
 				Spec: v1.PodSpec{
 					Containers: []v1.Container{
@@ -480,6 +480,7 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 									MountPath: configPath + "/values",
 								},
 							},
+							Ports: getContainerPorts(split),
 						},
 					},
 					Volumes: []v1.Volume{
@@ -520,4 +521,20 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 			},
 		},
 	}
+}
+
+func getContainerPorts(split SplitPiece) []v1.ContainerPort {
+	ports := SplitPorts[split]
+	containerPorts := []v1.ContainerPort{}
+	for _, port := range ports {
+		containerPort := v1.ContainerPort{
+			Name:          fmt.Sprintf("port-%d", port),
+			HostPort:      port.number,
+			ContainerPort: port.number,
+			Protocol:      port.protocol,
+		}
+		containerPorts = append(containerPorts, containerPort)
+	}
+
+	return containerPorts
 }
