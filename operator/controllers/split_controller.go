@@ -451,6 +451,7 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 		"split":       string(split),
 		"split-owner": instance.Name,
 	}
+	boolTrue := true
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      objectKey.Name,
@@ -481,6 +482,14 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 								},
 							},
 							Ports: getContainerPorts(split),
+							SecurityContext: &v1.SecurityContext{
+								Capabilities: &v1.Capabilities{
+									Add: []v1.Capability{
+										"NET_ADMIN",
+									},
+								},
+								Privileged: &boolTrue,
+							},
 						},
 					},
 					Volumes: []v1.Volume{
