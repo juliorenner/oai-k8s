@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="22e18af8-1b93-460b-bf2d-02a28ebaa565" name="Default Changelist" comment="feat: expose container ports">
+    <list default="true" id="22e18af8-1b93-460b-bf2d-02a28ebaa565" name="Default Changelist" comment="feat: add missing capabilities">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/operator/controllers/split_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/operator/controllers/split_controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/operator/controllers/types.go" beforeDir="false" afterPath="$PROJECT_DIR$/operator/controllers/types.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +129,8 @@
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <MESSAGE value="feat: first operator version" />
     <MESSAGE value="feat: expose container ports" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: expose container ports" />
+    <MESSAGE value="feat: add missing capabilities" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add missing capabilities" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -141,18 +142,19 @@
       <screen x="1680" y="-532" width="1080" height="1920" />
     </state>
     <state x="1910" y="221" key="#com.intellij.fileTypes.FileTypeChooser/1680.-532.1080.1920/0.0.1680.1050@1680.-532.1080.1920" timestamp="1600271271886" />
-    <state x="1994" y="202" width="549" height="749" key="#com.intellij.ide.util.MemberChooser" timestamp="1600463822032">
+    <state x="1994" y="202" width="549" height="749" key="#com.intellij.ide.util.MemberChooser" timestamp="1600566210648">
       <screen x="1680" y="0" width="1280" height="1024" />
     </state>
     <state x="1945" y="76" key="#com.intellij.ide.util.MemberChooser/1680.-532.1080.1920/0.0.1680.1050@1680.-532.1080.1920" timestamp="1600310206578" />
     <state x="412" y="213" width="567" height="704" key="#com.intellij.ide.util.MemberChooser/1680.0.1280.1024/0.0.1680.1050@0.0.1680.1050" timestamp="1600452615549" />
-    <state x="1994" y="202" width="549" height="749" key="#com.intellij.ide.util.MemberChooser/1680.0.1280.1024/0.0.1680.1050@1680.0.1280.1024" timestamp="1600463822032" />
+    <state x="1994" y="202" width="549" height="749" key="#com.intellij.ide.util.MemberChooser/1680.0.1280.1024/0.0.1680.1050@1680.0.1280.1024" timestamp="1600566210648" />
     <state x="412" y="213" key="#com.intellij.ide.util.MemberChooser/1680.0.1280.1024/0.23.1680.963@0.23.1680.963" timestamp="1600453516530" />
     <state x="412" y="289" width="567" height="704" key="#com.intellij.ide.util.MemberChooser/1680.23.1280.1001/0.0.1680.993@0.0.1680.993" timestamp="1600439536610" />
-    <state x="1864" y="14" key="CommitChangelistDialog2" timestamp="1600524320701">
-      <screen x="1680" y="0" width="1280" height="1024" />
+    <state x="1835" y="-506" key="CommitChangelistDialog2" timestamp="1600628450347">
+      <screen x="1680" y="-532" width="1080" height="1920" />
     </state>
-    <state x="1864" y="14" key="CommitChangelistDialog2/1680.0.1280.1024/0.0.1680.1050@1680.0.1280.1024" timestamp="1600524320701" />
+    <state x="1835" y="-506" key="CommitChangelistDialog2/1680.-532.1080.1920/0.0.1680.1050@1680.-532.1080.1920" timestamp="1600628450347" />
+    <state x="1864" y="14" key="CommitChangelistDialog2/1680.0.1280.1024/0.0.1680.1050@1680.0.1280.1024" timestamp="1600566271928" />
     <state width="1280" height="319" key="DebuggerActiveHint" timestamp="1600444807082">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
