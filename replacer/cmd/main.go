@@ -16,6 +16,8 @@ const (
 	templatePath     = "/config/template/template.conf"
 	configValuesPath = "/config/values/values.yaml"
 	resultFilePath   = "/config/config.conf"
+
+	splitPieceEnvVar = "SplitPiece"
 )
 
 type values struct {
@@ -28,10 +30,16 @@ type values struct {
 func main() {
 	logrus.Info("Starting replacer")
 	v := &values{}
-	for v.LocalAddress == "" {
-		if err := loadFile(v); err != nil {
-			log.Fatalf("error loading file: %s", err)
-		}
+	splitPiece := os.Getenv(splitPieceEnvVar)
+	switch splitPiece {
+	case "CU":
+		getCUContent(v)
+	case "DU":
+		getDUContent(v)
+	case "RU":
+		getRUContent(v)
+	default:
+		log.Fatalf("Split '%s' is not valid", splitPiece)
 	}
 
 	if err := replacer(v); err != nil {
@@ -39,6 +47,30 @@ func main() {
 	}
 
 	logrus.Info("Replacer finished!")
+}
+
+func getCUContent(cu *values) {
+	for cu.LocalAddress == "" || cu.UPFAddress == "" || cu.SouthAddress == "" {
+		if err := loadFile(cu); err != nil {
+			log.Fatalf("error loading file for CU split: %s", err)
+		}
+	}
+}
+
+func getDUContent(du *values) {
+	for du.LocalAddress == "" || du.NorthAddress == "" || du.SouthAddress == "" {
+		if err := loadFile(du); err != nil {
+			log.Fatalf("error loading file for DU split: %s", err)
+		}
+	}
+}
+
+func getRUContent(ru *values) {
+	for ru.LocalAddress == "" || ru.NorthAddress == "" {
+		if err := loadFile(ru); err != nil {
+			log.Fatalf("error loading file for RU split: %s", err)
+		}
+	}
 }
 
 func loadFile(v *values) error {

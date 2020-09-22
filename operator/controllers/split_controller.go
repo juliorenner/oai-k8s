@@ -56,6 +56,9 @@ type SplitReconciler struct {
 
 // +kubebuilder:rbac:groups=oai.unisinos,resources=splits,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=oai.unisinos,resources=splits/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups="",resources=configmaps,verbs=get;list;create;update;patch;delete;watch
+// +kubebuilder:rbac:groups="",resources=pods,verbs=get;list;create;update;patch;delete;watch
+// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;create;update;patch;delete;watch
 
 func (r *SplitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
@@ -489,6 +492,12 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 									},
 								},
 								Privileged: &boolTrue,
+							},
+							Env: []v1.EnvVar{
+								{
+									Name:  "SplitPiece",
+									Value: string(split),
+								},
 							},
 						},
 					},
