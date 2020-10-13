@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"text/template"
 
@@ -32,18 +31,20 @@ func main() {
 	v := &values{}
 	splitPiece := os.Getenv(splitPieceEnvVar)
 	switch splitPiece {
-	case "CU":
+	case "cu":
 		getCUContent(v)
-	case "DU":
+	case "du":
 		getDUContent(v)
-	case "RU":
+	case "ru":
 		getRUContent(v)
 	default:
-		log.Fatalf("Split '%s' is not valid", splitPiece)
+		logrus.Fatalf("Split '%s' is not valid", splitPiece)
 	}
 
+	logrus.Infof("split piece is '%s'", splitPiece)
+
 	if err := replacer(v); err != nil {
-		log.Fatalf("error replacing values: %s", err)
+		logrus.Fatalf("error replacing values: %s", err)
 	}
 
 	logrus.Info("Replacer finished!")
@@ -52,7 +53,7 @@ func main() {
 func getCUContent(cu *values) {
 	for cu.LocalAddress == "" || cu.UPFAddress == "" || cu.SouthAddress == "" {
 		if err := loadFile(cu); err != nil {
-			log.Fatalf("error loading file for CU split: %s", err)
+			logrus.Fatalf("error loading file for CU split: %s", err)
 		}
 	}
 }
@@ -60,7 +61,7 @@ func getCUContent(cu *values) {
 func getDUContent(du *values) {
 	for du.LocalAddress == "" || du.NorthAddress == "" || du.SouthAddress == "" {
 		if err := loadFile(du); err != nil {
-			log.Fatalf("error loading file for DU split: %s", err)
+			logrus.Fatalf("error loading file for DU split: %s", err)
 		}
 	}
 }
@@ -68,7 +69,7 @@ func getDUContent(du *values) {
 func getRUContent(ru *values) {
 	for ru.LocalAddress == "" || ru.NorthAddress == "" {
 		if err := loadFile(ru); err != nil {
-			log.Fatalf("error loading file for RU split: %s", err)
+			logrus.Fatalf("error loading file for RU split: %s", err)
 		}
 	}
 }

@@ -22,7 +22,7 @@ var _ = Describe("split controller unit tests", func() {
 	instance := &oaiv1beta1.Split{}
 	instance.Name = "test"
 	instance.Namespace = "testnamespace"
-	instance.Spec.UPFIp = "192.1.1.1"
+	instance.Spec.CoreIP = "192.1.1.1"
 	DescribeTable("getResourceName", func(split SplitPiece, expected string) {
 		Expect(getResourceName(instance, split)).To(Equal(expected))
 	},

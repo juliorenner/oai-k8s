@@ -29,6 +29,7 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -50,8 +51,9 @@ const (
 // SplitReconciler reconciles a Split object
 type SplitReconciler struct {
 	client.Client
-	Log    logr.Logger
-	Scheme *runtime.Scheme
+	Log      logr.Logger
+	Scheme   *runtime.Scheme
+	Recorder record.EventRecorder
 }
 
 // +kubebuilder:rbac:groups=oai.unisinos,resources=splits,verbs=get;list;watch;create;update;patch;delete
@@ -59,6 +61,7 @@ type SplitReconciler struct {
 // +kubebuilder:rbac:groups="",resources=configmaps,verbs=get;list;create;update;patch;delete;watch
 // +kubebuilder:rbac:groups="",resources=pods,verbs=get;list;create;update;patch;delete;watch
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;create;update;patch;delete;watch
+// +kubebuilder:rbac:groups="",resources=events,verbs=create;patch
 
 func (r *SplitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
@@ -73,14 +76,23 @@ func (r *SplitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	}
 
 	if err := r.syncConfigMaps(split, log); err != nil {
+		log.Error(err, "error syncing config maps")
+		r.Recorder.Event(split, "Error", "configmaps", err.Error())
 		return ctrl.Result{}, err
 	}
 
 	if err := r.syncPods(split, log); err != nil {
 		log.Error(err, "error syncing pods")
+		r.Recorder.Event(split, "Error", "pods", err.Error())
 		return ctrl.Result{}, err
 	}
 
+	if err := r.syncStatus(split); err != nil {
+		log.Error(err, "error updating status")
+		return ctrl.Result{}, err
+	}
+
+	r.Recorder.Event(split, "Normal", "Sync", "Synced successfully")
 	return ctrl.Result{Requeue: true, RequeueAfter: ResyncPeriod}, nil
 }
 
@@ -88,6 +100,56 @@ func (r *SplitReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&oaiv1beta1.Split{}).
 		Complete(r)
+}
+
+func (r *SplitReconciler) syncStatus(instance *oaiv1beta1.Split) error {
+	noErrors := true
+	cuPod := &v1.Pod{}
+	if exists, err := r.getCUPod(instance, cuPod); err != nil {
+		return fmt.Errorf("error getting cu pod: %w", err)
+	} else if exists {
+		instance.Status.CUNode = cuPod.Spec.NodeName
+		instance.Status.CUIP = cuPod.Status.PodIP
+		if cuPod.Status.Phase != v1.PodRunning {
+			noErrors = false
+			r.Recorder.Event(instance, "Error", "CU", fmt.Sprintf("cu pod in state '%s'", cuPod.Status.Phase))
+		}
+	}
+
+	duPod := &v1.Pod{}
+	if exists, err := r.getDUPod(instance, duPod); err != nil {
+		return fmt.Errorf("error getting du pod: %w", err)
+	} else if exists {
+		instance.Status.DUNode = duPod.Spec.NodeName
+		instance.Status.DUIP = duPod.Status.PodIP
+		if duPod.Status.Phase != v1.PodRunning {
+			noErrors = false
+			r.Recorder.Event(instance, "Error", "DU", fmt.Sprintf("du pod in state '%s'", duPod.Status.Phase))
+		}
+	}
+
+	ruPod := &v1.Pod{}
+	if exists, err := r.getDUPod(instance, ruPod); err != nil {
+		return fmt.Errorf("error getting cu pod: %w", err)
+	} else if exists {
+		instance.Status.RUIP = ruPod.Status.PodIP
+		if ruPod.Status.Phase != v1.PodRunning {
+			noErrors = false
+			r.Recorder.Event(instance, "Error", "RU", fmt.Sprintf("ru pod in state '%s'", ruPod.Status.Phase))
+		}
+	}
+
+	if noErrors {
+		instance.Status.State = oaiv1beta1.SplitStateRunning
+	} else {
+		instance.Status.State = oaiv1beta1.SplitStateError
+	}
+
+	if err := r.Status().Update(context.Background(), instance); err != nil {
+		return fmt.Errorf("error updating status: %w", err)
+	}
+
+	return nil
 }
 
 func (r *SplitReconciler) syncPods(instance *oaiv1beta1.Split, log logr.Logger) error {
@@ -111,6 +173,7 @@ func (r *SplitReconciler) syncPods(instance *oaiv1beta1.Split, log logr.Logger) 
 		if err := ctrl.SetControllerReference(instance, deployment, r.Scheme); err != nil {
 			return fmt.Errorf("error setting config map owner reference: %w", err)
 		}
+
 		if err := r.Create(context.Background(), deployment); err != nil {
 			return fmt.Errorf("error creating deployment %s: %w", deployment.Name, err)
 		}
@@ -143,7 +206,6 @@ func (r *SplitReconciler) syncConfigMaps(instance *oaiv1beta1.Split, log logr.Lo
 
 	log.Info("successfully synced")
 
-	// TODO: Update Status
 	return nil
 }
 
@@ -283,7 +345,7 @@ func (r *SplitReconciler) getCUConfigMapContent(instance *oaiv1beta1.Split) (str
 		cmContent.SouthAddress = duPod.Status.PodIP
 	}
 
-	cmContent.UPF = instance.Spec.UPFIp
+	cmContent.UPF = instance.Spec.CoreIP
 
 	return fmt.Sprintf(cuConfigMapContentTemplate, cmContent.UPF, cmContent.LocalAddress, cmContent.SouthAddress), nil
 }
@@ -455,7 +517,7 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 		"split-owner": instance.Name,
 	}
 	boolTrue := true
-	return &appsv1.Deployment{
+	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      objectKey.Name,
 			Namespace: objectKey.Namespace,
@@ -473,7 +535,7 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 						{
 							Name:            string(split),
 							Image:           getImageName(split),
-							ImagePullPolicy: v1.PullIfNotPresent,
+							ImagePullPolicy: v1.PullAlways,
 							VolumeMounts: []v1.VolumeMount{
 								{
 									Name:      "template",
@@ -539,6 +601,12 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 			},
 		},
 	}
+
+	if split == RU {
+		deployment.Spec.Template.Spec.NodeName = instance.Spec.RUNode
+	}
+
+	return deployment
 }
 
 func getContainerPorts(split SplitPiece) []v1.ContainerPort {

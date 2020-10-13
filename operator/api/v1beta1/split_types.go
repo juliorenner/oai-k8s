@@ -28,19 +28,28 @@ type SplitSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// UPFIp refers to the IP to establish communications with the Core
+	// CoreIP refers to the IP to establish communications with the Core
 	// +kubebuilder:validation:Required
-	UPFIp string `json:"upfIP,omitempty"`
+	CoreIP string `json:"coreIP,omitempty"`
+
+	// RUNode refers to the node where the RU should be placed
+	RUNode string `json:"ruNode,omitempty"`
 }
 
 // SplitStatus defines the observed state of Split
 type SplitStatus struct {
+	CUNode string     `json:"cuNode,omitempty"`
+	CUIP   string     `json:"cuIP,omitempty"`
+	DUNode string     `json:"duNode,omitempty"`
+	DUIP   string     `json:"duIP,omitempty"`
+	RUIP   string     `json:"ruIP,omitempty"`
+	State  SplitState `json:"state,omitempty"`
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
 
 // +kubebuilder:object:root=true
-
+// +kubebuilder:subresource:status
 // Split is the Schema for the splits API
 type Split struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -62,3 +71,10 @@ type SplitList struct {
 func init() {
 	SchemeBuilder.Register(&Split{}, &SplitList{})
 }
+
+type SplitState string
+
+const (
+	SplitStateRunning SplitState = "Running"
+	SplitStateError   SplitState = "Error"
+)
