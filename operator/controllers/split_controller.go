@@ -615,7 +615,6 @@ func getContainerPorts(split SplitPiece) []v1.ContainerPort {
 	for _, port := range ports {
 		containerPort := v1.ContainerPort{
 			Name:          fmt.Sprintf("port-%d", port.number),
-			HostPort:      port.number,
 			ContainerPort: port.number,
 			Protocol:      port.protocol,
 		}
