@@ -71,6 +71,11 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 }
 
 func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPlacer, log logr.Logger) error {
+	if splitsPlacer.Spec.TopologyConfig == "" {
+		log.Info("topology not provided, skipping sync.")
+		return nil
+	}
+
 	topology := &oaiv1beta1.Topology{}
 	topologyKey := r.getObjectKey(splitsPlacer.Spec.TopologyConfig, splitsPlacer.Namespace)
 	if err := r.readTopology(topologyKey, topology); err != nil {
