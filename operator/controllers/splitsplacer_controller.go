@@ -70,6 +70,8 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 		return ctrl.Result{}, fmt.Errorf("error syncing splits: %w", err)
 	}
 
+	r.Recorder.Event(splitsPlacer, EventNormalType, "Sync", "Synced successfully")
+
 	return ctrl.Result{Requeue: true, RequeueAfter: resyncPeriod}, nil
 }
 
