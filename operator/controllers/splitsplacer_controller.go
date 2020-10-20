@@ -50,7 +50,7 @@ type SplitsPlacerReconciler struct {
 // +kubebuilder:rbac:groups=oai.unisinos,resources=splitsplacers,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=oai.unisinos,resources=splitsplacers/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups="",resources=configmaps,verbs=get
-// +kubebuilder:rbac:groups="",resources=nodes,verbs=get,list
+// +kubebuilder:rbac:groups="",resources=nodes,verbs=get;list
 
 func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
