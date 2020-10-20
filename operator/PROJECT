@@ -4,4 +4,7 @@ resources:
 - group: oai
   kind: Split
   version: v1beta1
+- group: oai
+  kind: SplitsPlacer
+  version: v1beta1
 version: "2"

@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	ResyncPeriod = 20 * time.Second
+	resyncPeriod = 20 * time.Second
 
 	CU SplitPiece = "cu"
 	DU SplitPiece = "du"

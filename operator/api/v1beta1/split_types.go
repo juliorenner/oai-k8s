@@ -34,16 +34,28 @@ type SplitSpec struct {
 
 	// RUNode refers to the node where the RU should be placed
 	RUNode string `json:"ruNode,omitempty"`
+	// DUNode refers to the node where the DU should be placed
+	DUNode string `json:"duNode,omitempty"`
+	// CUNode refers to the node where the CU should be placed
+	CUNode string `json:"cuNode,omitempty"`
 }
 
 // SplitStatus defines the observed state of Split
 type SplitStatus struct {
-	CUNode string     `json:"cuNode,omitempty"`
-	CUIP   string     `json:"cuIP,omitempty"`
-	DUNode string     `json:"duNode,omitempty"`
-	DUIP   string     `json:"duIP,omitempty"`
-	RUIP   string     `json:"ruIP,omitempty"`
-	State  SplitState `json:"state,omitempty"`
+	// CUNode refers to the node where the CU is placed
+	CUNode string `json:"cuNode,omitempty"`
+	// CUIP refers to the IP of the CU pod
+	CUIP string `json:"cuIP,omitempty"`
+	// DUNode refers to the node where the DU is placed
+	DUNode string `json:"duNode,omitempty"`
+	// DUIP refers to the IP of the DU pod
+	DUIP string `json:"duIP,omitempty"`
+	// RUNode refers to the node where the RU is placed
+	RUNode string `json:"ruNode,omitempty"`
+	// RUIP refers to the IP of the RU pod
+	RUIP string `json:"ruIP,omitempty"`
+	// State shows the current state of the split according to the pods state
+	State SplitState `json:"state,omitempty"`
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -60,7 +72,6 @@ type Split struct {
 }
 
 // +kubebuilder:object:root=true
-
 // SplitList contains a list of Split
 type SplitList struct {
 	metav1.TypeMeta `json:",inline"`

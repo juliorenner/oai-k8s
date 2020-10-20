@@ -1,0 +1,7 @@
+apiVersion: oai.unisinos/v1beta1
+kind: SplitsPlacer
+metadata:
+  name: splitsplacer-sample
+spec:
+  # Add fields here
+  foo: bar
