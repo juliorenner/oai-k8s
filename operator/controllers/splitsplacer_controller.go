@@ -104,7 +104,7 @@ func (r *SplitsPlacerReconciler) validateTopologyNodes(topology *oaiv1beta1.Topo
 	for _, node := range topology.Nodes {
 		k8sNode := &v1.Node{}
 		nodeKey := r.getObjectKey(node.Name, namespace)
-		if exists, err := GetNode(r.Client, nodeKey, k8sNode); err != nil {
+		if exists, err := GetNode(r.Client, nodeKey, k8sNode, log); err != nil {
 			log.Error(err, "error getting node", logNodeKey, nodeKey.Name)
 			errorPool = append(errorPool, fmt.Errorf("error getting node '%s': %w", nodeKey.Name, err))
 		} else if !exists {
