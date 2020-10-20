@@ -77,9 +77,10 @@ func main() {
 		os.Exit(1)
 	}
 	if err = (&controllers.SplitsPlacerReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("SplitsPlacer"),
-		Scheme: mgr.GetScheme(),
+		Client:   mgr.GetClient(),
+		Log:      ctrl.Log.WithName("controllers").WithName("SplitsPlacer"),
+		Scheme:   mgr.GetScheme(),
+		Recorder: mgr.GetEventRecorderFor("splitsplacer-controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "SplitsPlacer")
 		os.Exit(1)
