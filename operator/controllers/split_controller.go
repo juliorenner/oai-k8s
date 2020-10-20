@@ -129,8 +129,8 @@ func (r *SplitReconciler) syncStatus(instance *oaiv1beta1.Split) error {
 	}
 
 	ruPod := &v1.Pod{}
-	if exists, err := r.getDUPod(instance, ruPod); err != nil {
-		return fmt.Errorf("error getting cu pod: %w", err)
+	if exists, err := r.getRUPod(instance, ruPod); err != nil {
+		return fmt.Errorf("error getting ru pod: %w", err)
 	} else if exists {
 		instance.Status.RUNode = ruPod.Spec.NodeName
 		instance.Status.RUIP = ruPod.Status.PodIP
