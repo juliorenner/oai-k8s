@@ -77,13 +77,13 @@ func (r *SplitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 
 	if err := r.syncConfigMaps(split, log); err != nil {
 		log.Error(err, "error syncing config maps")
-		r.Recorder.Event(split, EventErrorType, "configmaps", err.Error())
+		r.Recorder.Event(split, v1.EventTypeWarning, "configmaps", err.Error())
 		return ctrl.Result{}, err
 	}
 
 	if err := r.syncDeployments(split, log); err != nil {
 		log.Error(err, "error syncing pods")
-		r.Recorder.Event(split, EventErrorType, "pods", err.Error())
+		r.Recorder.Event(split, v1.EventTypeWarning, "pods", err.Error())
 		return ctrl.Result{}, err
 	}
 
@@ -92,7 +92,7 @@ func (r *SplitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return ctrl.Result{}, err
 	}
 
-	r.Recorder.Event(split, EventNormalType, "Sync", "Synced successfully")
+	r.Recorder.Event(split, v1.EventTypeNormal, "Sync", "Synced successfully")
 	return ctrl.Result{Requeue: true, RequeueAfter: resyncPeriod}, nil
 }
 
@@ -112,7 +112,7 @@ func (r *SplitReconciler) syncStatus(instance *oaiv1beta1.Split) error {
 		instance.Status.CUIP = cuPod.Status.PodIP
 		if cuPod.Status.Phase != v1.PodRunning {
 			noErrors = false
-			r.Recorder.Event(instance, EventErrorType, "CU", fmt.Sprintf("cu pod in state '%s'", cuPod.Status.Phase))
+			r.Recorder.Event(instance, v1.EventTypeWarning, "CU", fmt.Sprintf("cu pod in state '%s'", cuPod.Status.Phase))
 		}
 	}
 
@@ -124,7 +124,7 @@ func (r *SplitReconciler) syncStatus(instance *oaiv1beta1.Split) error {
 		instance.Status.DUIP = duPod.Status.PodIP
 		if duPod.Status.Phase != v1.PodRunning {
 			noErrors = false
-			r.Recorder.Event(instance, EventErrorType, "DU", fmt.Sprintf("du pod in state '%s'", duPod.Status.Phase))
+			r.Recorder.Event(instance, v1.EventTypeWarning, "DU", fmt.Sprintf("du pod in state '%s'", duPod.Status.Phase))
 		}
 	}
 
@@ -136,7 +136,7 @@ func (r *SplitReconciler) syncStatus(instance *oaiv1beta1.Split) error {
 		instance.Status.RUIP = ruPod.Status.PodIP
 		if ruPod.Status.Phase != v1.PodRunning {
 			noErrors = false
-			r.Recorder.Event(instance, EventErrorType, "RU", fmt.Sprintf("ru pod in state '%s'", ruPod.Status.Phase))
+			r.Recorder.Event(instance, v1.EventTypeWarning, "RU", fmt.Sprintf("ru pod in state '%s'", ruPod.Status.Phase))
 		}
 	}
 

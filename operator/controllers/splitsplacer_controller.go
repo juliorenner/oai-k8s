@@ -70,7 +70,7 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 		return ctrl.Result{}, fmt.Errorf("error syncing splits: %w", err)
 	}
 
-	r.Recorder.Event(splitsPlacer, EventNormalType, "Sync", "Synced successfully")
+	r.Recorder.Event(splitsPlacer, v1.EventTypeNormal, "Sync", "Synced successfully")
 
 	return ctrl.Result{Requeue: true, RequeueAfter: resyncPeriod}, nil
 }
@@ -83,13 +83,13 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 
 	topology := &oaiv1beta1.Topology{}
 	topologyKey := r.getObjectKey(splitsPlacer.Spec.TopologyConfig, splitsPlacer.Namespace)
-	if err := r.readTopology(topologyKey, topology, log); err != nil {
+	if err := r.readTopology(topologyKey, topology); err != nil {
 		return fmt.Errorf("error reading topology: %w", err)
 	}
 
 	if errors := r.validateTopologyNodes(topology, splitsPlacer.Namespace, log); errors != nil {
 		for _, err := range errors {
-			r.Recorder.Event(splitsPlacer, EventErrorType, "InvalidTopologyNode", err.Error())
+			r.Recorder.Event(splitsPlacer, v1.EventTypeWarning, "InvalidTopologyNode", err.Error())
 		}
 		return fmt.Errorf("error validating topology nodes")
 	}
@@ -162,8 +162,7 @@ func (r *SplitsPlacerReconciler) getSplitTemplate(ru oaiv1beta1.RUPosition, name
 	}
 }
 
-func (r *SplitsPlacerReconciler) readTopology(objectKey types.NamespacedName,
-	topology *oaiv1beta1.Topology, log logr.Logger) error {
+func (r *SplitsPlacerReconciler) readTopology(objectKey types.NamespacedName, topology *oaiv1beta1.Topology) error {
 	cm := &v1.ConfigMap{}
 	if exists, err := GetConfigMap(r.Client, objectKey, cm); err != nil {
 		return fmt.Errorf("error getting topology '%s' config map: %w", objectKey.String(), err)
@@ -175,8 +174,6 @@ func (r *SplitsPlacerReconciler) readTopology(objectKey types.NamespacedName,
 	if !exists {
 		return fmt.Errorf("invalid topology config map. Key '%s' does not exist", topologyKey)
 	}
-
-	log.Info("topology data", "data", topologyData)
 
 	if err := json.Unmarshal([]byte(topologyData), topology); err != nil {
 		return fmt.Errorf("error unmarshaling topology: %w", err)
