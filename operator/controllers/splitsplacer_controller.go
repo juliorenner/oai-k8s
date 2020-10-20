@@ -83,7 +83,7 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 
 	topology := &oaiv1beta1.Topology{}
 	topologyKey := r.getObjectKey(splitsPlacer.Spec.TopologyConfig, splitsPlacer.Namespace)
-	if err := r.readTopology(topologyKey, topology); err != nil {
+	if err := r.readTopology(topologyKey, topology, log); err != nil {
 		return fmt.Errorf("error reading topology: %w", err)
 	}
 
@@ -160,7 +160,7 @@ func (r *SplitsPlacerReconciler) getSplitTemplate(ru oaiv1beta1.RUPosition, name
 }
 
 func (r *SplitsPlacerReconciler) readTopology(objectKey types.NamespacedName,
-	topology *oaiv1beta1.Topology) error {
+	topology *oaiv1beta1.Topology, log logr.Logger) error {
 	cm := &v1.ConfigMap{}
 	if exists, err := GetConfigMap(r.Client, objectKey, cm); err != nil {
 		return fmt.Errorf("error getting topology '%s' config map: %w", objectKey.String(), err)
@@ -174,8 +174,10 @@ func (r *SplitsPlacerReconciler) readTopology(objectKey types.NamespacedName,
 	}
 
 	for k := range cm.BinaryData {
-		fmt.Printf("Binary Key: %s", k)
+		log.Info("Binary Key...", "key", k)
 	}
+
+	log.Info("topology data", "data", topologyData)
 
 	if err := json.Unmarshal([]byte(topologyData), topology); err != nil {
 		return fmt.Errorf("error unmarshaling topology: %w", err)
