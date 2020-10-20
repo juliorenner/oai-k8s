@@ -62,16 +62,37 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 	}
 
 	if err := r.syncTopology(splitsPlacer, log); err != nil {
+		if err := r.updateStatus(splitsPlacer, oaiv1beta1.PlacerStateError); err != nil {
+			log.Error(err, "error updating splits placer status after error syncing topology")
+		}
 		return ctrl.Result{}, fmt.Errorf("error syncing topology: %s", err)
 	}
 
 	if err := r.syncSplits(splitsPlacer, log); err != nil {
+		if err := r.updateStatus(splitsPlacer, oaiv1beta1.PlacerStateError); err != nil {
+			log.Error(err, "error updating splits placer status after error syncing splits")
+		}
 		return ctrl.Result{}, fmt.Errorf("error syncing splits: %w", err)
 	}
 
 	r.Recorder.Event(splitsPlacer, v1.EventTypeNormal, "Sync", "Synced successfully")
 
+	if err := r.updateStatus(splitsPlacer, oaiv1beta1.PlacerStateFinished); err != nil {
+		log.Error(err, "error updating splits placer status")
+	}
+
 	return ctrl.Result{Requeue: true, RequeueAfter: resyncPeriod}, nil
+}
+
+func (r *SplitsPlacerReconciler) updateStatus(splitsPlacer *oaiv1beta1.SplitsPlacer, desiredState oaiv1beta1.SplitsPlacerState) error {
+	if splitsPlacer.Status.State != desiredState {
+		splitsPlacer.Status.State = desiredState
+		if err := r.Status().Update(context.Background(), splitsPlacer); err != nil {
+			return fmt.Errorf("error updating splitsplacer status: %w", err)
+		}
+	}
+
+	return nil
 }
 
 func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPlacer, log logr.Logger) error {
@@ -104,8 +125,6 @@ func (r *SplitsPlacerReconciler) validateTopologyNodes(topology *oaiv1beta1.Topo
 		return append(errorPool, err)
 	}
 
-	log.Info("node list", "nodes", nodeList)
-
 	k8sNodeMap := NodeListToMap(nodeList)
 	for _, node := range topology.Nodes {
 		if !k8sNodeMap.Has(node.Name) {
@@ -116,6 +135,8 @@ func (r *SplitsPlacerReconciler) validateTopologyNodes(topology *oaiv1beta1.Topo
 	if len(errorPool) > 0 {
 		return errorPool
 	}
+
+	log.Info("topology successfully validated")
 
 	return nil
 }

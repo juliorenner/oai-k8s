@@ -20,6 +20,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+const (
+	SplitStateRunning SplitState = "Running"
+	SplitStateError   SplitState = "Error"
+)
+
+type SplitState string
+
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
@@ -62,6 +69,7 @@ type SplitStatus struct {
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="STATUS",type=string,JSONPath=`.status.state`
 // Split is the Schema for the splits API
 type Split struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -82,10 +90,3 @@ type SplitList struct {
 func init() {
 	SchemeBuilder.Register(&Split{}, &SplitList{})
 }
-
-type SplitState string
-
-const (
-	SplitStateRunning SplitState = "Running"
-	SplitStateError   SplitState = "Error"
-)

@@ -20,8 +20,15 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+const (
+	PlacerStateFinished = "Finished"
+	PlacerStateError    = "Error"
+)
+
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+
+type SplitsPlacerState string
 
 // SplitsPlacerSpec defines the desired state of SplitsPlacer
 type SplitsPlacerSpec struct {
@@ -47,11 +54,12 @@ type RUPosition struct {
 
 // SplitsPlacerStatus defines the observed state of SplitsPlacer
 type SplitsPlacerStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	State SplitsPlacerState `json:"state,omitempty"`
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="STATUS",type=string,JSONPath=`.status.state`
 // SplitsPlacer is the Schema for the splitsplacers API
 type SplitsPlacer struct {
 	metav1.TypeMeta   `json:",inline"`

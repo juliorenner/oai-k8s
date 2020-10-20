@@ -8,6 +8,10 @@ metadata:
   creationTimestamp: null
   name: splits.oai.unisinos
 spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.state
+    name: STATUS
+    type: string
   group: oai.unisinos
   names:
     kind: Split
