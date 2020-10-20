@@ -35,7 +35,6 @@ import (
 const (
 	topologyKey = "topology"
 
-	logNodeKey  = "node"
 	logSplitKey = "split"
 )
 
@@ -87,7 +86,7 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 		return fmt.Errorf("error reading topology: %w", err)
 	}
 
-	if errors := r.validateTopologyNodes(topology, splitsPlacer.Namespace, log); errors != nil {
+	if errors := r.validateTopologyNodes(topology, log); errors != nil {
 		for _, err := range errors {
 			r.Recorder.Event(splitsPlacer, v1.EventTypeWarning, "InvalidTopologyNode", err.Error())
 		}
@@ -97,18 +96,20 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 	return nil
 }
 
-func (r *SplitsPlacerReconciler) validateTopologyNodes(topology *oaiv1beta1.Topology, namespace string,
-	log logr.Logger) []error {
-
+func (r *SplitsPlacerReconciler) validateTopologyNodes(topology *oaiv1beta1.Topology, log logr.Logger) []error {
 	var errorPool []error
+
+	nodeList := &v1.NodeList{}
+	if err := ListNodes(r.Client, nodeList); err != nil {
+		return append(errorPool, err)
+	}
+
+	log.Info("node list", "nodes", nodeList)
+
+	k8sNodeMap := NodeListToMap(nodeList)
 	for _, node := range topology.Nodes {
-		k8sNode := &v1.Node{}
-		nodeKey := r.getObjectKey(node.Name, "")
-		if exists, err := GetNode(r.Client, nodeKey, k8sNode, log); err != nil {
-			log.Error(err, "error getting node", logNodeKey, nodeKey.Name)
-			errorPool = append(errorPool, fmt.Errorf("error getting node '%s': %w", nodeKey.Name, err))
-		} else if !exists {
-			errorPool = append(errorPool, fmt.Errorf("node '%s' described in topology not found", nodeKey.Name))
+		if !k8sNodeMap.Has(node.Name) {
+			errorPool = append(errorPool, fmt.Errorf("node '%s' does not exist", node.Name))
 		}
 	}
 
@@ -194,4 +195,13 @@ func (r *SplitsPlacerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&oaiv1beta1.SplitsPlacer{}).
 		Complete(r)
+}
+
+func NodeListToMap(nodeList *v1.NodeList) StringSet {
+	nodeMap := NewStringSet()
+	for _, node := range nodeList.Items {
+		nodeMap[node.Name] = Empty
+	}
+
+	return nodeMap
 }
