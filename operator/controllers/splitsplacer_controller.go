@@ -34,6 +34,9 @@ import (
 
 const (
 	topologyKey = "topology"
+
+	logNodeKey  = "node"
+	logSplitKey = "split"
 )
 
 // SplitsPlacerReconciler reconciles a SplitsPlacer object
@@ -72,7 +75,7 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 
 func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPlacer, log logr.Logger) error {
 	if splitsPlacer.Spec.TopologyConfig == "" {
-		log.Info("topology not provided, skipping sync.")
+		log.Info("topology not provided, skipping sync")
 		return nil
 	}
 
@@ -100,7 +103,7 @@ func (r *SplitsPlacerReconciler) validateTopologyNodes(topology *oaiv1beta1.Topo
 		k8sNode := &v1.Node{}
 		nodeKey := r.getObjectKey(node.Name, namespace)
 		if exists, err := GetNode(r.Client, nodeKey, k8sNode); err != nil {
-			log.Error(err, "error getting node %s", nodeKey.Name)
+			log.Error(err, "error getting node", logNodeKey, nodeKey.Name)
 			errorPool = append(errorPool, fmt.Errorf("error getting node '%s': %w", nodeKey.Name, err))
 		} else if !exists {
 			errorPool = append(errorPool, fmt.Errorf("node '%s' described in topology not found", nodeKey.Name))
@@ -126,7 +129,7 @@ func (r *SplitsPlacerReconciler) syncSplits(splitsPlacer *oaiv1beta1.SplitsPlace
 		}
 
 		if !exists {
-			log.Info("Creating split %s", ru.SplitName)
+			log.Info("Creating split...", logSplitKey, ru.SplitName)
 			err := r.Create(context.Background(), r.getSplitTemplate(ru, splitsPlacer.Namespace,
 				splitsPlacer.Spec.CoreIP))
 			if err != nil {
@@ -134,7 +137,7 @@ func (r *SplitsPlacerReconciler) syncSplits(splitsPlacer *oaiv1beta1.SplitsPlace
 			}
 		}
 
-		log.Info("Split %s already exists, skipping creation...", ru.SplitName)
+		log.Info("Split already exists, skipping creation...", logSplitKey, ru.SplitName)
 	}
 
 	return nil
