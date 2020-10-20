@@ -50,7 +50,7 @@ type SplitsPlacerReconciler struct {
 // +kubebuilder:rbac:groups=oai.unisinos,resources=splitsplacers,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=oai.unisinos,resources=splitsplacers/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups="",resources=configmaps,verbs=get
-// +kubebuilder:rbac:groups="",resources=nodes,verbs=get
+// +kubebuilder:rbac:groups="",resources=nodes,verbs=get,list
 
 func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
@@ -132,8 +132,11 @@ func (r *SplitsPlacerReconciler) syncSplits(splitsPlacer *oaiv1beta1.SplitsPlace
 
 		if !exists {
 			log.Info("Creating split...", logSplitKey, ru.SplitName)
-			err := r.Create(context.Background(), r.getSplitTemplate(ru, splitsPlacer.Namespace,
-				splitsPlacer.Spec.CoreIP))
+			split = r.getSplitTemplate(ru, splitsPlacer.Namespace, splitsPlacer.Spec.CoreIP)
+			if err := ctrl.SetControllerReference(splitsPlacer, split, r.Scheme); err != nil {
+				return fmt.Errorf("error setting split owner reference: %w", err)
+			}
+			err := r.Create(context.Background(), split)
 			if err != nil {
 				return fmt.Errorf("error creating split %s: %w", ru.SplitName, err)
 			}
