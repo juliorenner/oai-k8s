@@ -173,10 +173,6 @@ func (r *SplitsPlacerReconciler) readTopology(objectKey types.NamespacedName,
 		return fmt.Errorf("invalid topology config map. Key '%s' does not exist", topologyKey)
 	}
 
-	for k := range cm.BinaryData {
-		log.Info("Binary Key...", "key", k)
-	}
-
 	log.Info("topology data", "data", topologyData)
 
 	if err := json.Unmarshal([]byte(topologyData), topology); err != nil {

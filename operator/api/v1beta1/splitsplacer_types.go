@@ -83,7 +83,7 @@ type Node struct {
 
 type Link struct {
 	Name         string     `json:"name,omitempty"`
-	LinkCapacity int        `json:"linkCapacity,omitempty"`
+	LinkCapacity float32    `json:"linkCapacity,omitempty"`
 	LinkDelay    float32    `json:"linkDelay,omitempty"`
 	Source       Connection `json:"source,omitempty"`
 	Destination  Connection `json:"destination,omitempty"`
