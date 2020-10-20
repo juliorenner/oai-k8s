@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/go-logr/logr"
 	oaiv1beta1 "github.com/juliorenner/oai-k8s/operator/api/v1beta1"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -53,9 +54,10 @@ func GetConfigMap(k8sClient client.Client, objectKey types.NamespacedName, cm *v
 }
 
 // TODO: Use Informer/Cache
-func GetNode(k8sClient client.Client, objectKey types.NamespacedName, node *v1.Node) (bool, error) {
+func GetNode(k8sClient client.Client, objectKey types.NamespacedName, node *v1.Node, log logr.Logger) (bool, error) {
 	err := k8sClient.Get(context.Background(), objectKey, node)
 	if err != nil {
+		log.Error(err, "error getting node", "node", objectKey.Name)
 		if apierrors.IsNotFound(err) {
 			return false, nil
 		}
