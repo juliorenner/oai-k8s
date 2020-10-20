@@ -250,8 +250,8 @@ data:
                     "interface": "eth1"
                 }
             },
-            "node3--node2": {
-                "name":
+            {
+                "name": "node3--node2",
                 "linkCapacity": "1200",
                 "LinkDelay": "4",
                 "source": {
