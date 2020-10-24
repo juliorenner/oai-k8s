@@ -460,7 +460,5 @@ sigs.k8s.io/controller-runtime/pkg/webhook/admission
 sigs.k8s.io/controller-runtime/pkg/webhook/conversion
 sigs.k8s.io/controller-runtime/pkg/webhook/internal/certwatcher
 sigs.k8s.io/controller-runtime/pkg/webhook/internal/metrics
-# sigs.k8s.io/structured-merge-diff v0.0.0-20190525122527-15d366b2352e
-## explicit
 # sigs.k8s.io/yaml v1.1.0
 sigs.k8s.io/yaml
