@@ -9,7 +9,7 @@ data:
   topology: |
     {
         "nodes": {
-            "node1": {
+            "node15": {
                 "interfaces": ["eth0", "eth1", "eth2", "eth3"],
                 "hops": 1
             },
@@ -21,43 +21,43 @@ data:
                 "interfaces": ["eth0", "eth1", "eth2", "eth3", "eth4"],
                 "hops": 2
             },
-            "node-14": {
+            "node14": {
                 "interfaces": ["eth0", "eth1", "eth2", "eth3"],
                 "hops": 2
             },
-            "node-5": {
+            "node5": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 2
             },
-            "node-6": {
+            "node6": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 3
             },
-            "node-7": {
+            "node7": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 3
             },
-            "node-8": {
+            "node8": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 3
             },
-            "node-9": {
+            "node9": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 4
             },
-            "node-10": {
+            "node10": {
                 "interfaces": ["eth0", "eth1", "eth2"],
                 "hops": 3
             },
-            "node-11": {
+            "node11": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 3
             },
-            "node-12": {
+            "node12": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 4
             },
-            "node-13": {
+            "node13": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 5
             },
@@ -67,11 +67,11 @@ data:
             }
         },
         "links": {
-            "node-6--node3": {
+            "node6--node3": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
-                    "node": "node-6",
+                    "node": "node6",
                     "interface": "eth0"
                 },
                 "destination": {
@@ -79,23 +79,23 @@ data:
                     "interface": "eth2"
                 }
             },
-            "node-6--node-14": {
+            "node6--node14": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
-                    "node": "node-6",
+                    "node": "node6",
                     "interface": "eth1"
                 },
                 "destination": {
-                    "node": "node-14",
+                    "node": "node14",
                     "interface": "eth2"
                 }
             },
-            "node-7--node3": {
+            "node7--node3": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
-                    "node": "node-7",
+                    "node": "node7",
                     "interface": "eth0"
                 },
                 "destination": {
@@ -103,23 +103,23 @@ data:
                     "interface": "eth3"
                 }
             },
-            "node-7--node-5": {
+            "node7--node5": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
-                    "node": "node-7",
+                    "node": "node7",
                     "interface": "eth1"
                 },
                 "destination": {
-                    "node": "node-5",
+                    "node": "node5",
                     "interface": "eth2"
                 }
             },
-            "node-8--node3": {
+            "node8--node3": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
-                    "node": "node-8",
+                    "node": "node8",
                     "interface": "eth0"
                 },
                 "destination": {
@@ -127,92 +127,92 @@ data:
                     "interface": "eth4"
                 }
             },
-            "node-9--node-8": {
+            "node9--node8": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
-                    "node": "node-9",
+                    "node": "node9",
                     "interface": "eth0"
                 },
                 "destination": {
-                    "node": "node-8",
+                    "node": "node8",
                     "interface": "eth1"
                 }
             },
-            "node-10--node-9": {
+            "node10--node9": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
-                    "node": "node-10",
+                    "node": "node10",
                     "interface": "eth1"
                 },
                 "destination": {
-                    "node": "node-9",
+                    "node": "node9",
                     "interface": "eth1"
                 }
             },
             {
-                "name": "node-10--node-14",
+                "name": "node10--node14",
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
-                    "node": "node-10",
+                    "node": "node10",
                     "interface": "eth0"
                 },
                 "destination": {
-                    "node": "node-14",
+                    "node": "node14",
                     "interface": "eth3"
                 }
             },
-            "node-11--node-14": {
+            "node11--node14": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
-                    "node": "node-11",
+                    "node": "node11",
                     "interface": "eth0"
                 },
                 "destination": {
-                    "node": "node-14",
+                    "node": "node14",
                     "interface": "eth4"
                 }
             },
-            "node-11--node-5": {
+            "node11--node5": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
-                    "node": "node-11",
+                    "node": "node11",
                     "interface": "eth1"
                 },
                 "destination": {
-                    "node": "node-5",
+                    "node": "node5",
                     "interface": "eth3"
                 }
             },
-            "node-12--node-11": {
+            "node12--node11": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
-                    "node": "node-12",
+                    "node": "node12",
                     "interface": "eth0"
                 },
                 "destination": {
-                    "node": "node-11",
+                    "node": "node11",
                     "interface": "eth2"
                 }
             },
-            "node-13--node-12": {
+            "node13--node12": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
-                    "node": "node-13",
+                    "node": "node13",
                     "interface": "eth0"
                 },
                 "destination": {
-                    "node": "node-12",
+                    "node": "node12",
                     "interface": "eth1"
                 }
             },
-            "node3--node1": {
+            "node3--node15": {
                 "linkCapacity": 1200,
                 "LinkDelay": 3,
                 "source": {
@@ -220,7 +220,7 @@ data:
                     "interface": "eth0"
                 },
                 "destination": {
-                    "node": "node1",
+                    "node": "node15",
                     "interface": "eth1"
                 }
             },
@@ -236,23 +236,23 @@ data:
                     "interface": "eth1"
                 }
             },
-            "node-14--node1": {
+            "node14--node15": {
                 "linkCapacity": 1200,
                 "LinkDelay": 5,
                 "source": {
-                    "node": "node-14",
+                    "node": "node14",
                     "interface": "eth0"
                 },
                 "destination": {
-                    "node": "node1",
+                    "node": "node15",
                     "interface": "eth2"
                 }
             },
-            "node-14--node2": {
+            "node14--node2": {
                 "linkCapacity": 1200,
                 "LinkDelay": 6,
                 "source": {
-                    "node": "node-14",
+                    "node": "node14",
                     "interface": "eth1"
                 },
                 "destination": {
@@ -260,23 +260,23 @@ data:
                     "interface": "eth2"
                 }
             },
-            "node-5--node1": {
+            "node5--node15": {
                 "linkCapacity": 1200,
                 "LinkDelay": 3,
                 "source": {
-                    "node": "node-5",
+                    "node": "node5",
                     "interface": "eth0"
                 },
                 "destination": {
-                    "node": "node1",
+                    "node": "node15",
                     "interface": "eth3"
                 }
             },
-            "node-5--node2": {
+            "node5--node2": {
                 "linkCapacity": 1200,
                 "LinkDelay": 4,
                 "source": {
-                    "node": "node-5",
+                    "node": "node5",
                     "interface": "eth1"
                 },
                 "destination": {
@@ -284,11 +284,11 @@ data:
                     "interface": "eth3"
                 }
             },
-            "node1--node4": {
+            "node15--node4": {
                 "linkCapacity": 1200,
                 "LinkDelay": 2,
                 "source": {
-                    "node": "node1",
+                    "node": "node15",
                     "interface": "eth0"
                 },
                 "destination": {
