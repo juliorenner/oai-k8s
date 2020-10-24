@@ -222,7 +222,8 @@ func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation *map
 	if exists, err := utils.GetConfigMap(r.Client, cmObjectKey, cm); err != nil {
 		return fmt.Errorf("error getting disaggregation config map: %w", err)
 	} else if !exists {
-		return errors.New("disaggregation config map not found")
+		return fmt.Errorf("disaggregation config map '%s' not found in namespace '%s'", cmObjectKey.Name,
+			cmObjectKey.Namespace)
 	}
 
 	disaggregationData := []byte(cm.Data[DisaggregationKey])
