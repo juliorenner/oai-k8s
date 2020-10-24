@@ -19,10 +19,14 @@ package controllers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/go-logr/logr"
 	oaiv1beta1 "github.com/juliorenner/oai-k8s/operator/api/v1beta1"
+	"github.com/juliorenner/oai-k8s/operator/controllers/algorithm"
+	"github.com/juliorenner/oai-k8s/operator/controllers/utils"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -35,7 +39,8 @@ import (
 const (
 	topologyKey = "topology"
 
-	logSplitKey = "split"
+	placerResyncPeriod = 60 * time.Second
+	logSplitKey        = "split"
 )
 
 // SplitsPlacerReconciler reconciles a SplitsPlacer object
@@ -81,7 +86,7 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 		log.Error(err, "error updating splits placer status")
 	}
 
-	return ctrl.Result{Requeue: true, RequeueAfter: resyncPeriod}, nil
+	return ctrl.Result{Requeue: true, RequeueAfter: placerResyncPeriod}, nil
 }
 
 func (r *SplitsPlacerReconciler) updateStatus(splitsPlacer *oaiv1beta1.SplitsPlacer, desiredState oaiv1beta1.SplitsPlacerState) error {
@@ -107,11 +112,11 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 		return fmt.Errorf("error reading topology: %w", err)
 	}
 
-	if errors := r.validateTopologyNodes(topology, log); errors != nil {
-		for _, err := range errors {
+	if topologyErrors := r.validateTopologyNodes(topology, log); topologyErrors != nil {
+		for _, err := range topologyErrors {
 			r.Recorder.Event(splitsPlacer, v1.EventTypeWarning, "InvalidTopologyNode", err.Error())
 		}
-		return fmt.Errorf("error validating topology nodes")
+		return errors.New("error validating topology nodes")
 	}
 
 	return nil
@@ -121,14 +126,18 @@ func (r *SplitsPlacerReconciler) validateTopologyNodes(topology *oaiv1beta1.Topo
 	var errorPool []error
 
 	nodeList := &v1.NodeList{}
-	if err := ListNodes(r.Client, nodeList); err != nil {
+	if err := utils.ListNodes(r.Client, nodeList); err != nil {
 		return append(errorPool, err)
 	}
 
-	k8sNodeMap := NodeListToMap(nodeList)
-	for _, node := range topology.Nodes {
-		if !k8sNodeMap.Has(node.Name) {
-			errorPool = append(errorPool, fmt.Errorf("node '%s' does not exist", node.Name))
+	k8sNodeMap := utils.NodeListToMap(nodeList)
+	for nodeName := range topology.Nodes {
+		if _, exists := k8sNodeMap[nodeName]; !exists {
+			errorPool = append(errorPool, fmt.Errorf("node '%s' does not exist", nodeName))
+			continue
+		} else if len(errorPool) > 0 {
+			// if there are errors skip resources assignment and finish the validation
+			continue
 		}
 	}
 
@@ -137,7 +146,6 @@ func (r *SplitsPlacerReconciler) validateTopologyNodes(topology *oaiv1beta1.Topo
 	}
 
 	log.Info("topology successfully validated")
-
 	return nil
 }
 
@@ -147,7 +155,7 @@ func (r *SplitsPlacerReconciler) syncSplits(splitsPlacer *oaiv1beta1.SplitsPlace
 		splitKey := r.getObjectKey(ru.SplitName, splitsPlacer.Namespace)
 
 		split := &oaiv1beta1.Split{}
-		exists, err := GetSplit(r.Client, splitKey, split)
+		exists, err := utils.GetSplit(r.Client, splitKey, split)
 		if err != nil {
 			return fmt.Errorf("error checking if split exists: %w", err)
 		}
@@ -170,7 +178,7 @@ func (r *SplitsPlacerReconciler) syncSplits(splitsPlacer *oaiv1beta1.SplitsPlace
 	return nil
 }
 
-func (r *SplitsPlacerReconciler) getSplitTemplate(ru oaiv1beta1.RUPosition, namespace string,
+func (r *SplitsPlacerReconciler) getSplitTemplate(ru *oaiv1beta1.RUPosition, namespace string,
 	coreIP string) *oaiv1beta1.Split {
 	return &oaiv1beta1.Split{
 		ObjectMeta: metav1.ObjectMeta{
@@ -179,14 +187,35 @@ func (r *SplitsPlacerReconciler) getSplitTemplate(ru oaiv1beta1.RUPosition, name
 		},
 		Spec: oaiv1beta1.SplitSpec{
 			CoreIP: coreIP,
-			RUNode: ru.Node,
+			RUNode: ru.RUNode,
 		},
 	}
 }
 
+func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation *oaiv1beta1.Disaggregation) error {
+	cmObjectKey := types.NamespacedName{
+		Namespace: operatorNamespace,
+		Name:      DisaggregationConfigMapName,
+	}
+
+	cm := &v1.ConfigMap{}
+	if exists, err := utils.GetConfigMap(r.Client, cmObjectKey, cm); err != nil {
+		return fmt.Errorf("error getting disaggregation config map: %w", err)
+	} else if !exists {
+		return errors.New("disaggregation config map not found")
+	}
+
+	disaggregationData := []byte(cm.Data[DisaggregationKey])
+	if err := json.Unmarshal(disaggregationData, disaggregation); err != nil {
+		return fmt.Errorf("error unmarshaling disaggregation config map data: %w", err)
+	}
+
+	return nil
+}
+
 func (r *SplitsPlacerReconciler) readTopology(objectKey types.NamespacedName, topology *oaiv1beta1.Topology) error {
 	cm := &v1.ConfigMap{}
-	if exists, err := GetConfigMap(r.Client, objectKey, cm); err != nil {
+	if exists, err := utils.GetConfigMap(r.Client, objectKey, cm); err != nil {
 		return fmt.Errorf("error getting topology '%s' config map: %w", objectKey.String(), err)
 	} else if !exists {
 		return fmt.Errorf("topology config map '%s' does not exists", objectKey.String())
@@ -204,25 +233,39 @@ func (r *SplitsPlacerReconciler) readTopology(objectKey types.NamespacedName, to
 	return nil
 }
 
-func (r *SplitsPlacerReconciler) getObjectKey(name string,
-	namespace string) types.NamespacedName {
+func (r *SplitsPlacerReconciler) getObjectKey(name string, namespace string) types.NamespacedName {
 	return types.NamespacedName{
 		Namespace: namespace,
 		Name:      name,
 	}
 }
 
+func (r *SplitsPlacerReconciler) place(splitsPlacer *oaiv1beta1.SplitsPlacer, topology *oaiv1beta1.Topology,
+	disaggregations map[string]*oaiv1beta1.Disaggregation, log logr.Logger) error {
+
+	nodeList := &v1.NodeList{}
+	if err := utils.ListNodes(r.Client, nodeList); err != nil {
+		return fmt.Errorf("error listing K8S nodes: %w", err)
+	}
+
+	requestedResources := &utils.RequestedResources{
+		Memory: *utils.NewMemoryQuantity(SplitMemoryRequestValue),
+		CPU:    *utils.NewCPUQuantity(SplitCPURequestValue),
+	}
+
+	topologyGraph := algorithm.NewPlacementBFS(topology, disaggregations, nodeList, requestedResources, log)
+
+	if success, err := topologyGraph.Place(splitsPlacer.Spec.RUs); err != nil {
+		return err
+	} else if success {
+		return nil
+	}
+
+	return nil
+}
+
 func (r *SplitsPlacerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&oaiv1beta1.SplitsPlacer{}).
 		Complete(r)
-}
-
-func NodeListToMap(nodeList *v1.NodeList) StringSet {
-	nodeMap := NewStringSet()
-	for _, node := range nodeList.Items {
-		nodeMap[node.Name] = Empty
-	}
-
-	return nodeMap
 }

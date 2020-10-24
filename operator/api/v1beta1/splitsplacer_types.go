@@ -23,12 +23,22 @@ import (
 const (
 	PlacerStateFinished = "Finished"
 	PlacerStateError    = "Error"
+
+	RRC  DisaggregationProtocolStack = "RRC"
+	PDCP DisaggregationProtocolStack = "PDCP"
+	RLCH DisaggregationProtocolStack = "RLCH"
+	RLCL DisaggregationProtocolStack = "RLCL"
+	MACH DisaggregationProtocolStack = "MACH"
+	MACL DisaggregationProtocolStack = "MACL"
+	PHYH DisaggregationProtocolStack = "PHYH"
+	PHYL DisaggregationProtocolStack = "PHYL"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 type SplitsPlacerState string
+type DisaggregationProtocolStack string
 
 // SplitsPlacerSpec defines the desired state of SplitsPlacer
 type SplitsPlacerSpec struct {
@@ -37,7 +47,7 @@ type SplitsPlacerSpec struct {
 
 	// RUs
 	// +kubebuilder:validation:Required
-	RUs []RUPosition `json:"rus,omitempty"`
+	RUs []*RUPosition `json:"rus,omitempty"`
 	// CoreIP to where the splits created will point to.
 	// +kubebuilder:validation:Required
 	CoreIP string `json:"coreIP,omitempty"`
@@ -49,7 +59,15 @@ type SplitsPlacerSpec struct {
 // will be created.
 type RUPosition struct {
 	SplitName string `json:"splitName,omitempty"`
-	Node      string `json:"node,omitempty"`
+	RUNode    string `json:"node,omitempty"`
+	// CUNode will be fulfilled by the split placer algorithm
+	CUNode string `json:"cuNode,omitempty"`
+	// DUNode will be fulfilled by the split placer algorithm
+	DUNode string `json:"duNode,omitempty"`
+	// Path will be fulfilled by the split placer algorithm
+	Path []string `json:"path,omitempty"`
+	// Disaggregation will be fulfilled by the split placer algorithm
+	Disaggregation string `json:"disaggregation,omitempty"`
 }
 
 // SplitsPlacerStatus defines the observed state of SplitsPlacer
@@ -79,18 +97,17 @@ type SplitsPlacerList struct {
 
 // Topology is the Schema for the nodes topology where the splits will be placed
 type Topology struct {
-	Nodes []Node `json:"nodes,omitempty"`
-	Links []Link `json:"links,omitempty"`
+	Nodes map[string]*Node `json:"nodes,omitempty"`
+	Links map[string]*Link `json:"links,omitempty"`
 }
 
 type Node struct {
-	Name       string   `json:"name,omitempty"`
 	Interfaces []string `json:"interfaces,omitempty"`
 	Core       bool     `json:"core,omitempty"`
+	Hops       int      `json:"hops,omitempty"`
 }
 
 type Link struct {
-	Name         string     `json:"name,omitempty"`
 	LinkCapacity float32    `json:"linkCapacity,omitempty"`
 	LinkDelay    float32    `json:"linkDelay,omitempty"`
 	Source       Connection `json:"source,omitempty"`
@@ -100,6 +117,25 @@ type Link struct {
 type Connection struct {
 	Node      string `json:"node,omitempty"`
 	Interface string `json:"interface,omitempty"`
+}
+
+type Disaggregation struct {
+	Name          string               `json:"name,omitempty"`
+	ProtocolStack ProtocolStack        `json:"protocolStack,omitempty"`
+	Backhaul      *NetworkRequirements `json:"backhaul,omitempty"`
+	Midhaul       *NetworkRequirements `json:"midhaul,omitempty"`
+	Fronthaul     *NetworkRequirements `json:"fronthaul,omitempty"`
+}
+
+type ProtocolStack struct {
+	CU []DisaggregationProtocolStack `json:"cu,omitempty"`
+	DU []DisaggregationProtocolStack `json:"du,omitempty"`
+	RU []DisaggregationProtocolStack `json:"ru,omitempty"`
+}
+
+type NetworkRequirements struct {
+	Latency   float32 `json:"latency,omitempty"`
+	Bandwidth float32 `json:"bandwidth,omitempty"`
 }
 
 func init() {

@@ -8,81 +8,66 @@ metadata:
 data:
   topology: |
     {
-        "nodes": [
-            {
-                "name": "node1",
+        "nodes": {
+            "node1": {
                 "interfaces": ["eth0", "eth1", "eth2", "eth3"],
                 "hops": 1
             },
-            {
-                "name": "node2",
+            "node2": {
                 "interfaces": ["eth0", "eth1", "eth2", "eth3", "eth4"],
                 "hops": 1
             },
-            {
-                "name": "node3",
+            "node3": {
                 "interfaces": ["eth0", "eth1", "eth2", "eth3", "eth4"],
                 "hops": 2
             },
-            {
-                "name": "node4",
+            "node4": {
                 "interfaces": ["eth0", "eth1", "eth2", "eth3"],
                 "hops": 2
             },
-            {
-                "name": "node5",
+            "node5": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 2
             },
-            {
-                "name": "node6",
+            "node6": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 3
             },
-            {
-                "name": "node7",
+            "node7": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 3
             },
-            {
-                "name": "node8",
+            "node8": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 3
             },
-            {
-                "name": "node9",
+            "node9": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 4
             },
-            {
-                "name": "node10",
+            "node10": {
                 "interfaces": ["eth0", "eth1", "eth2"],
                 "hops": 3
             },
-            {
-                "name": "node11",
+            "node11": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 3
             },
-            {
-                "name": "node12",
+            "node12": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 4
             },
-            {
-                "name": "node13",
+            "node13": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 5
             },
-            {
-                "name": "node14",
+            "node14": {
                 "interfaces": ["eth0", "eth1"],
                 "core": true
             }
-        ],
-        "links": [
-            {
-                "name": "node6--node3",
+        },
+        "links": {
+            "node6--node3": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
@@ -94,8 +79,7 @@ data:
                     "interface": "eth2"
                 }
             },
-            {
-                "name": "node6--node4",
+            "node6--node4": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
@@ -107,8 +91,7 @@ data:
                     "interface": "eth2"
                 }
             },
-            {
-                "name": "node7--node3",
+            "node7--node3": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
@@ -120,8 +103,7 @@ data:
                     "interface": "eth3"
                 }
             },
-            {
-                "name": "node7--node5",
+            "node7--node5": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
@@ -133,8 +115,7 @@ data:
                     "interface": "eth2"
                 }
             },
-            {
-                "name": "node8--node3",
+            "node8--node3": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
@@ -146,8 +127,7 @@ data:
                     "interface": "eth4"
                 }
             },
-            {
-                "name": "node9--node8",
+            "node9--node8": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
@@ -159,8 +139,7 @@ data:
                     "interface": "eth1"
                 }
             },
-            {
-                "name": "node10--node9",
+            "node10--node9": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
@@ -185,8 +164,7 @@ data:
                     "interface": "eth3"
                 }
             },
-            {
-                "name": "node11--node4",
+            "node11--node4": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
@@ -198,8 +176,7 @@ data:
                     "interface": "eth4"
                 }
             },
-            {
-                "name": "node11--node5",
+            "node11--node5": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
@@ -211,8 +188,7 @@ data:
                     "interface": "eth3"
                 }
             },
-            {
-                "name": "node12--node11",
+            "node12--node11": {
                 "linkCapacity": 300,
                 "LinkDelay": 0.25,
                 "source": {
@@ -224,8 +200,7 @@ data:
                     "interface": "eth2"
                 }
             },
-            {
-                "name": "node13--node12",
+            "node13--node12": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
@@ -237,8 +212,7 @@ data:
                     "interface": "eth1"
                 }
             },
-            {
-                "name": "node3--node1",
+            "node3--node1": {
                 "linkCapacity": 1200,
                 "LinkDelay": 3,
                 "source": {
@@ -250,8 +224,7 @@ data:
                     "interface": "eth1"
                 }
             },
-            {
-                "name": "node3--node2",
+            "node3--node2": {
                 "linkCapacity": 1200,
                 "LinkDelay": 4,
                 "source": {
@@ -263,8 +236,7 @@ data:
                     "interface": "eth1"
                 }
             },
-            {
-                "name": "node4--node1",
+            "node4--node1": {
                 "linkCapacity": 1200,
                 "LinkDelay": 5,
                 "source": {
@@ -276,8 +248,7 @@ data:
                     "interface": "eth2"
                 }
             },
-            {
-                "name": "node4--node2",
+            "node4--node2": {
                 "linkCapacity": 1200,
                 "LinkDelay": 6,
                 "source": {
@@ -289,8 +260,7 @@ data:
                     "interface": "eth2"
                 }
             },
-            {
-                "name": "node5--node1",
+            "node5--node1": {
                 "linkCapacity": 1200,
                 "LinkDelay": 3,
                 "source": {
@@ -302,8 +272,7 @@ data:
                     "interface": "eth3"
                 }
             },
-            {
-                "name": "node5--node2",
+            "node5--node2": {
                 "linkCapacity": 1200,
                 "LinkDelay": 4,
                 "source": {
@@ -315,8 +284,7 @@ data:
                     "interface": "eth3"
                 }
             },
-            {
-                "name": "node1--node14",
+            "node1--node14": {
                 "linkCapacity": 1200,
                 "LinkDelay": 2,
                 "source": {
@@ -328,8 +296,7 @@ data:
                     "interface": "eth0"
                 }
             },
-            {
-                "name": "node2--node14",
+            "node2--node14": {
                 "linkCapacity": 1200,
                 "LinkDelay": 3,
                 "source": {
@@ -341,5 +308,5 @@ data:
                     "interface": "eth1"
                 }
             }
-        ]
+        }
     }

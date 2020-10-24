@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: disaggregations
+  labels:
+    "disaggregation": "true"
+data:
+  disaggregations: |
+    [{
+            "name": "8",
+            "protocolStack": {
+                "cu": ["RRC", "PDCP"],
+                "du": ["RLCH", "RLCL", "MACH", "MACL"],
+                "ru": ["PHYH", "PHYL"]
+            },
+            "splitOptions": {
+                "cu-du": "O2",
+                "du-ru": "O6"
+            },
+            "backhaul": {
+
+            },
+            "midhaul": {
+                "latency": "30",
+                "bandwidth": ""
+            },
+            "fronthaul": {}
+        },
+        {
+            "name": "13"
+        },
+        {
+            "name": "17"
+        },
+        {
+            "name": "19"
+        }
+    ]

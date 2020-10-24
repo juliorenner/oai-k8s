@@ -1,5 +1,8 @@
 # cloud.google.com/go v0.38.0
 cloud.google.com/go/compute/metadata
+# github.com/Workiva/go-datastructures v1.0.52
+## explicit
+github.com/Workiva/go-datastructures/queue
 # github.com/beorn7/perks v1.0.1
 github.com/beorn7/perks/quantile
 # github.com/davecgh/go-spew v1.1.1

@@ -18,10 +18,13 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/go-logr/logr"
+	"github.com/juliorenner/oai-k8s/operator/controllers/utils"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -46,6 +49,8 @@ const (
 	dockerRepositoryEnv = "DOCKER_REPOSITORY"
 
 	configPath = "/config"
+
+	resyncPeriod = 20 * time.Second
 )
 
 // SplitReconciler reconciles a Split object
@@ -160,7 +165,7 @@ func (r *SplitReconciler) syncDeployments(instance *oaiv1beta1.Split, log logr.L
 		objectKey := getSplitObjectKey(instance, splitPiece)
 
 		deployment := &appsv1.Deployment{}
-		exists, err := GetDeployment(r.Client, objectKey, deployment)
+		exists, err := utils.GetDeployment(r.Client, objectKey, deployment)
 		if err != nil {
 			return fmt.Errorf("error getting deployment %s: %w", objectKey.Name, err)
 		}
@@ -218,7 +223,7 @@ func (r *SplitReconciler) syncTemplatesConfigMap(splitNamespace string, log logr
 		}
 
 		cmOperator := &v1.ConfigMap{}
-		exists, err := GetConfigMap(r.Client, operatorObjectKey, cmOperator)
+		exists, err := utils.GetConfigMap(r.Client, operatorObjectKey, cmOperator)
 		if err != nil || !exists {
 			return fmt.Errorf("error getting template config map %s from the operator namespace: %w",
 				operatorObjectKey.Name, err)
@@ -230,7 +235,7 @@ func (r *SplitReconciler) syncTemplatesConfigMap(splitNamespace string, log logr
 		}
 		// TODO: Use cache
 		cm := &v1.ConfigMap{}
-		exists, err = GetConfigMap(r.Client, objectKey, cm)
+		exists, err = utils.GetConfigMap(r.Client, objectKey, cm)
 		if err != nil {
 			return fmt.Errorf("error getting config map %s from namespace %s: %w", objectKey.Name, objectKey.Namespace, err)
 		}
@@ -267,7 +272,7 @@ func (r *SplitReconciler) syncValuesConfigMap(instance *oaiv1beta1.Split, log lo
 
 		log.Info("reconciling config map values for split", logSplitPieceKey, string(splitPiece))
 		cm := &v1.ConfigMap{}
-		exists, err := GetConfigMap(r.Client, objectKey, cm)
+		exists, err := utils.GetConfigMap(r.Client, objectKey, cm)
 		if err != nil {
 			return fmt.Errorf("error getting config map %s: %w", objectKey.String(), err)
 		}
@@ -463,7 +468,7 @@ func (r *SplitReconciler) getPod(instance *oaiv1beta1.Split, split SplitPiece, p
 	}
 
 	if len(podList.Items) > 1 {
-		return false, fmt.Errorf("incorrect number of pods, currently only 1 should be available")
+		return false, errors.New("incorrect number of pods, currently only 1 should be available")
 	}
 
 	if len(podList.Items) == 0 {
@@ -534,6 +539,16 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 								{
 									Name:  "SplitPiece",
 									Value: string(split),
+								},
+							},
+							Resources: v1.ResourceRequirements{
+								Limits: v1.ResourceList{
+									v1.ResourceMemory: *utils.NewMemoryQuantity(SplitMemoryLimitValue),
+									v1.ResourceCPU:    *utils.NewCPUQuantity(SplitCPULimitValue),
+								},
+								Requests: v1.ResourceList{
+									v1.ResourceMemory: *utils.NewMemoryQuantity(SplitMemoryRequestValue),
+									v1.ResourceCPU:    *utils.NewCPUQuantity(SplitCPURequestValue),
 								},
 							},
 						},

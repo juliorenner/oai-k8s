@@ -1,4 +1,4 @@
-package controllers
+package utils
 
 import (
 	"context"
@@ -60,4 +60,13 @@ func ListNodes(k8sClient client.Client, nodeList *v1.NodeList) error {
 	}
 
 	return nil
+}
+
+func NodeListToMap(nodeList *v1.NodeList) map[string]*v1.Node {
+	nodeMap := make(map[string]*v1.Node)
+	for _, node := range nodeList.Items {
+		nodeMap[node.Name] = &node
+	}
+
+	return nodeMap
 }
