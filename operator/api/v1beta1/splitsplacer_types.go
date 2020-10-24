@@ -53,6 +53,8 @@ type SplitsPlacerSpec struct {
 	CoreIP string `json:"coreIP,omitempty"`
 	// Topology refers to the config map name where the topology is described
 	TopologyConfig string `json:"topologyConfig,omitempty"`
+	// Retrigger placement
+	Retrigger bool `json:"retrigger,omitempty"`
 }
 
 // RUPosition defines the position and the name of the RU from one service chain. Based on this definition a Split

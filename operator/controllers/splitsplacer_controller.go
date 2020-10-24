@@ -21,7 +21,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/go-logr/logr"
 	oaiv1beta1 "github.com/juliorenner/oai-k8s/operator/api/v1beta1"
@@ -39,8 +38,7 @@ import (
 const (
 	topologyKey = "topology"
 
-	placerResyncPeriod = 60 * time.Second
-	logSplitKey        = "split"
+	logSplitKey = "split"
 )
 
 // SplitsPlacerReconciler reconciles a SplitsPlacer object
@@ -66,6 +64,11 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
+	if splitsPlacer.Status.State == oaiv1beta1.PlacerStateFinished && !splitsPlacer.Spec.Retrigger {
+		log.Info("Skipping reconcile. Status Finished and retrigger not enabled.", logSplitKey, splitsPlacer.Name)
+		return ctrl.Result{}, nil
+	}
+
 	if err := r.syncTopology(splitsPlacer, log); err != nil {
 		if err := r.updateStatus(splitsPlacer, oaiv1beta1.PlacerStateError); err != nil {
 			log.Error(err, "error updating splits placer status after error syncing topology")
@@ -82,11 +85,16 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 
 	r.Recorder.Event(splitsPlacer, v1.EventTypeNormal, "Sync", "Synced successfully")
 
+	if err := r.Update(context.Background(), splitsPlacer); err != nil {
+		log.Error(err, "error updating splits placer spec")
+		return ctrl.Result{}, fmt.Errorf("error updating splits placer: %w", err)
+	}
+
 	if err := r.updateStatus(splitsPlacer, oaiv1beta1.PlacerStateFinished); err != nil {
 		log.Error(err, "error updating splits placer status")
 	}
 
-	return ctrl.Result{Requeue: true, RequeueAfter: placerResyncPeriod}, nil
+	return ctrl.Result{}, nil
 }
 
 func (r *SplitsPlacerReconciler) updateStatus(splitsPlacer *oaiv1beta1.SplitsPlacer, desiredState oaiv1beta1.SplitsPlacerState) error {
@@ -117,6 +125,15 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 			r.Recorder.Event(splitsPlacer, v1.EventTypeWarning, "InvalidTopologyNode", err.Error())
 		}
 		return errors.New("error validating topology nodes")
+	}
+
+	disaggregation := &map[string]*oaiv1beta1.Disaggregation{}
+	if err := r.readDisaggregationsMetadata(disaggregation); err != nil {
+		return fmt.Errorf("error reading disaggregation metadata: %w", err)
+	}
+
+	if err := r.place(splitsPlacer, topology, *disaggregation, log); err != nil {
+		return fmt.Errorf("error placing service functions: %w", err)
 	}
 
 	return nil
@@ -188,11 +205,14 @@ func (r *SplitsPlacerReconciler) getSplitTemplate(ru *oaiv1beta1.RUPosition, nam
 		Spec: oaiv1beta1.SplitSpec{
 			CoreIP: coreIP,
 			RUNode: ru.RUNode,
+			CUNode: ru.CUNode,
+			DUNode: ru.DUNode,
 		},
 	}
 }
 
-func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation *oaiv1beta1.Disaggregation) error {
+func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation *map[string]*oaiv1beta1.
+	Disaggregation) error {
 	cmObjectKey := types.NamespacedName{
 		Namespace: operatorNamespace,
 		Name:      DisaggregationConfigMapName,
@@ -257,8 +277,8 @@ func (r *SplitsPlacerReconciler) place(splitsPlacer *oaiv1beta1.SplitsPlacer, to
 
 	if success, err := topologyGraph.Place(splitsPlacer.Spec.RUs); err != nil {
 		return err
-	} else if success {
-		return nil
+	} else if !success {
+		return errors.New("not possible to allocate all RUs")
 	}
 
 	return nil

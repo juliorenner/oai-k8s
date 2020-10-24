@@ -33,7 +33,7 @@ spec:
         kind:
           description: 'Kind is a string value representing the REST resource this
             object represents. Servers may infer this from the endpoint the client
-            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#utils-kinds'
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
           type: string
         metadata:
           type: object
@@ -43,6 +43,9 @@ spec:
             coreIP:
               description: CoreIP to where the splits created will point to.
               type: string
+            retrigger:
+              description: Retrigger placement
+              type: boolean
             rus:
               description: RUs
               items:
@@ -50,8 +53,23 @@ spec:
                   from one service chain. Based on this definition a Split will be
                   created.
                 properties:
+                  cuNode:
+                    description: CUNode will be fulfilled by the split placer algorithm
+                    type: string
+                  disaggregation:
+                    description: Disaggregation will be fulfilled by the split placer
+                      algorithm
+                    type: string
+                  duNode:
+                    description: DUNode will be fulfilled by the split placer algorithm
+                    type: string
                   node:
                     type: string
+                  path:
+                    description: Path will be fulfilled by the split placer algorithm
+                    items:
+                      type: string
+                    type: array
                   splitName:
                     type: string
                 type: object
