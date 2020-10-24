@@ -13,7 +13,7 @@ const (
 	CUTemplateConfigMapName     = "operator-cu-template"
 	DUTemplateConfigMapName     = "operator-du-template"
 	RUTemplateConfigMapName     = "operator-ru-template"
-	DisaggregationConfigMapName = "disaggregation"
+	DisaggregationConfigMapName = "operator-disaggregations"
 
 	DisaggregationKey = "disaggregation"
 
