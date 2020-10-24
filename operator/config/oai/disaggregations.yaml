@@ -6,33 +6,78 @@ metadata:
     "disaggregation": "true"
 data:
   disaggregations: |
-    [{
-            "name": "8",
+    {
+        "1": {
             "protocolStack": {
                 "cu": ["RRC", "PDCP"],
                 "du": ["RLCH", "RLCL", "MACH", "MACL"],
-                "ru": ["PHYH", "PHYL"]
+                "ru": ["PHYH", "PHYL", "RF"]
             },
             "splitOptions": {
                 "cu-du": "O2",
                 "du-ru": "O6"
             },
             "backhaul": {
-
+                "bandwidth": 151
             },
             "midhaul": {
-                "latency": "30",
-                "bandwidth": ""
+                "latency": 30,
+                "bandwidth": 151
             },
-            "fronthaul": {}
+            "fronthaul": {
+                "latency": 2,
+                "bandwidth": 152
+            },
+            "crosshaul": {
+                "latency": 30
+            }
         },
-        {
-            "name": "13"
+        "2": {
+            "protocolStack": {
+                "cu": ["RRC", "PDCP"],
+                "du": [],
+                "ru": ["RLCH", "RLCL", "MACH", "MACL", "PHYH", "PHYL", "RF"]
+            },
+            "backhaul": {
+                "bandwidth": 151
+            },
+            "midhaul": {},
+            "fronthaul": {
+                "bandwidth": 151
+            },
+            "crosshaul": {
+                "latency": 30
+            }
         },
-        {
-            "name": "17"
+        "3": {
+            "protocolStack": {
+                "cu": ["RRC", "PDCP", "RLCH", "RLCL", "MACH", "MACL"],
+                "du": [],
+                "ru": ["PHYH", "PHYL", "RF"]
+            },
+            "backhaul": {
+                "bandwidth": 151
+            },
+            "midhaul": {},
+            "fronthaul": {
+                "latency": 2,
+                "bandwidth": 152
+            },
+            "crosshaul": {
+                "latency": 30
+            }
         },
-        {
-            "name": "19"
+        "4": {
+            "protocolStack": {
+                "cu": ["RRC", "PDCP", "RLCH", "RLCL", "MACH", "MACL", "PHYH", "PHYL", "RF"],
+                "du": [],
+                "ru": []
+            },
+            "backhaul": {},
+            "midhaul": {},
+            "fronthaul": {},
+            "crosshaul": {
+                "latency": 30
+            }
         }
-    ]
+    }
