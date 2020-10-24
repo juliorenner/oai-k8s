@@ -3,8 +3,10 @@ kind: SplitsPlacer
 metadata:
   name: splitsplacer-sample
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.105.76
+  topologyConfig: "topology"
   rus:
-  - splitName: "managed-split"
-    node: "node3"
-    topologyConfig: "topology"
+  - splitName: "1"
+    node: "node6"
+  - splitName: "2"
+    node: "node6"

@@ -151,8 +151,7 @@ data:
                     "interface": "eth1"
                 }
             },
-            {
-                "name": "node10--node14",
+            "node10--node14": {
                 "linkCapacity": 300,
                 "LinkDelay": 1,
                 "source": {
