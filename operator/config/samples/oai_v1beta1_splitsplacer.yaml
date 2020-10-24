@@ -3,5 +3,8 @@ kind: SplitsPlacer
 metadata:
   name: splitsplacer-sample
 spec:
-  # Add fields here
-  foo: bar
+  coreIP: 10.233.105.56
+  rus:
+  - splitName: "managed-split"
+    node: "node3"
+    topologyConfig: "topology"
