@@ -229,7 +229,7 @@ func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation map[
 	disaggregationInt := make(map[string]interface{})
 	disaggregationData := []byte(cm.Data[DisaggregationKey])
 	if err := json.Unmarshal(disaggregationData, &disaggregationInt); err != nil {
-		return fmt.Errorf("error unmarshaling disaggregation config map data: %w", err)
+		return fmt.Errorf("error unmarshaling disaggregation config map data: %w. Data: %s", err, cm.Data[DisaggregationKey])
 	}
 
 	for k, v := range disaggregationInt {
