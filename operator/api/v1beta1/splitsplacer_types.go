@@ -122,7 +122,6 @@ type Connection struct {
 }
 
 type Disaggregation struct {
-	Name          string               `json:"name,omitempty"`
 	ProtocolStack ProtocolStack        `json:"protocolStack,omitempty"`
 	Backhaul      *NetworkRequirements `json:"backhaul,omitempty"`
 	Midhaul       *NetworkRequirements `json:"midhaul,omitempty"`

@@ -127,12 +127,12 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 		return errors.New("error validating topology nodes")
 	}
 
-	disaggregation := &map[string]*oaiv1beta1.Disaggregation{}
+	disaggregation := map[string]*oaiv1beta1.Disaggregation{}
 	if err := r.readDisaggregationsMetadata(disaggregation); err != nil {
 		return fmt.Errorf("error reading disaggregation metadata: %w", err)
 	}
 
-	if err := r.place(splitsPlacer, topology, *disaggregation, log); err != nil {
+	if err := r.place(splitsPlacer, topology, disaggregation, log); err != nil {
 		return fmt.Errorf("error placing service functions: %w", err)
 	}
 
@@ -211,7 +211,7 @@ func (r *SplitsPlacerReconciler) getSplitTemplate(ru *oaiv1beta1.RUPosition, nam
 	}
 }
 
-func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation *map[string]*oaiv1beta1.
+func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation map[string]*oaiv1beta1.
 	Disaggregation) error {
 	cmObjectKey := types.NamespacedName{
 		Namespace: operatorNamespace,
@@ -226,9 +226,18 @@ func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation *map
 			cmObjectKey.Namespace)
 	}
 
+	disaggregationInt := make(map[string]interface{})
 	disaggregationData := []byte(cm.Data[DisaggregationKey])
-	if err := json.Unmarshal(disaggregationData, disaggregation); err != nil {
+	if err := json.Unmarshal(disaggregationData, &disaggregationInt); err != nil {
 		return fmt.Errorf("error unmarshaling disaggregation config map data: %w", err)
+	}
+
+	for k, v := range disaggregationInt {
+		d, ok := v.(*oaiv1beta1.Disaggregation)
+		if !ok {
+			return fmt.Errorf("error casting dissagregation interface to struct object. Key: %s", k)
+		}
+		disaggregation[k] = d
 	}
 
 	return nil
