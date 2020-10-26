@@ -146,9 +146,10 @@ func (p *PlacementBFS) findPathsTo(nodeToFind string) [][]string {
 func (p *PlacementBFS) allocateRUsResources(splitsPlacer []*oaiv1beta1.RUPosition) error {
 	for _, ru := range splitsPlacer {
 		topologyNode := p.nodes[ru.RUNode]
-		p.log.Info("allocating resources. CPU request: %d, CPU available: %d, Memory request: %d, "+
-			"Memory Available: %d", p.requestedResources.CPU.Value(), topologyNode.Resources.CPUAvailable.Value(),
-			p.requestedResources.Memory.Value(), topologyNode.Resources.Memory.Value())
+		p.log.Info("allocating resources", "cpu_request", p.requestedResources.CPU.Value(),
+			"cpu_available", topologyNode.Resources.CPUAvailable.Value(),
+			"memory_request", p.requestedResources.Memory.Value(),
+			"memory_available", topologyNode.Resources.Memory.Value())
 		if err := topologyNode.AllocateResources(p.requestedResources.Memory, p.requestedResources.CPU); err != nil {
 			return fmt.Errorf("error allocating split '%s' in node '%s'. Not enough resources available: %w",
 				ru.SplitName, ru.RUNode, err)

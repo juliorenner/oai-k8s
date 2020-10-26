@@ -39,7 +39,6 @@ func TestPlacementAlgorithm(t *testing.T) {
 		isValid              bool
 		isErrorExpected      bool
 		numberOfAllocatedRUs int
-		//expectedPosition     []expectedPosition
 	}{
 		{
 			"no enough link", generateRUs("node6", "node6", "node6"), false, false, 2,
