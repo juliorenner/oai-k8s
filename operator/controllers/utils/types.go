@@ -43,7 +43,7 @@ func NewMemoryQuantity(value int64) *resource.Quantity {
 }
 
 func NewCPUQuantity(value int64) *resource.Quantity {
-	return resource.NewQuantity(value, resource.DecimalSI)
+	return resource.NewMilliQuantity(value, resource.DecimalSI)
 }
 
 type RequestedResources struct {
@@ -66,6 +66,9 @@ func (node *Node) HasResources(memory, cpu resource.Quantity) bool {
 func (node *Node) AllocateResources(memory, cpu resource.Quantity, log logr.Logger) error {
 	log.Info("memory", "mem", node.Resources.MemoryAvailable.Value())
 	log.Info("cpu", "cpu_1", node.Resources.CPUAvailable.Value())
+	log.Info("cpu_direct_access", "cpu", node.Resources.CPUAvailable)
+	log.Info("memory_direct_access", "mem", node.Resources.MemoryAvailable)
+
 	node.Resources.MemoryAvailable.Sub(memory)
 	node.Resources.CPUAvailable.Sub(cpu)
 
