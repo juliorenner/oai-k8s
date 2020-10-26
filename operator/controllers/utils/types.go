@@ -68,7 +68,8 @@ func (node *Node) AllocateResources(memory, cpu resource.Quantity) error {
 
 	if node.Resources.CPUAvailable.Value() < 0 ||
 		node.Resources.MemoryAvailable.Value() < 0 {
-		return fmt.Errorf("error allocation Resources from node '%s'", node.NodeName)
+		return fmt.Errorf("error allocating resources. CPU: %d, Memory: %d", node.Resources.CPUAvailable.Value(),
+			node.Resources.MemoryAvailable.Value())
 	}
 
 	return nil

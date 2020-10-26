@@ -147,8 +147,8 @@ func (p *PlacementBFS) allocateRUsResources(splitsPlacer []*oaiv1beta1.RUPositio
 	for _, ru := range splitsPlacer {
 		topologyNode := p.nodes[ru.RUNode]
 		if err := topologyNode.AllocateResources(p.requestedResources.Memory, p.requestedResources.CPU); err != nil {
-			return fmt.Errorf("error allocating split '%s' in node '%s'. Not enough resources available",
-				ru.SplitName, ru.RUNode)
+			return fmt.Errorf("error allocating split '%s' in node '%s'. Not enough resources available: %w",
+				ru.SplitName, ru.RUNode, err)
 		}
 		p.log.Info("Able to allocate RU split", logSplitKey, ru.SplitName)
 	}
