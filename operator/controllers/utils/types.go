@@ -78,6 +78,9 @@ func (node *Node) AllocateResources(memory, cpu resource.Quantity, log logr.Logg
 			node.Resources.MemoryAvailable.Value())
 	}
 
+	log.Info("remaining resources", "cpu", node.Resources.CPUAvailable.Value(), "memory",
+		node.Resources.MemoryAvailable.Value())
+
 	return nil
 }
 
