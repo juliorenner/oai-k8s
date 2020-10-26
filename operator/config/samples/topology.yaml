@@ -12,7 +12,7 @@ data:
             "node16": {
                 "interfaces": ["eth0", "eth1"],
                 "core": true
-            }
+            },
             "node14": {
                 "interfaces": ["eth0", "eth1", "eth2", "eth3"],
                 "hops": 1
@@ -64,7 +64,7 @@ data:
             "node13": {
                 "interfaces": ["eth0", "eth1"],
                 "hops": 5
-            },
+            }
         },
         "links": {
             "node6--node3": {
