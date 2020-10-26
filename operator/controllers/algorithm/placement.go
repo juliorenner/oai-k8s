@@ -59,6 +59,10 @@ func NewPlacementBFS(topology *oaiv1beta1.Topology, disaggregations map[string]*
 			CPUAvailable:    k8sNode.Status.Allocatable.Cpu(),
 		}
 
+		log.Info("allocatable info", "cpu", k8sNode.Status.Allocatable.Cpu(), "cpu_1",
+			k8sNode.Status.Allocatable[v1.ResourceCPU], "memory", k8sNode.Status.Allocatable.Memory(),
+			k8sNode.Status.Allocatable[v1.ResourceMemory])
+
 		graphNodes[name] = &utils.Node{NodeName: name, Links: make(map[string]*utils.Link), Resources: resources}
 		if nodes.Core {
 			core = name
