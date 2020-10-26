@@ -50,6 +50,7 @@ func NewPlacementBFS(topology *oaiv1beta1.Topology, disaggregations map[string]*
 	graphNodes := make(map[string]*utils.Node)
 	for name, nodes := range topology.Nodes {
 		k8sNode := k8sNodeMap[name]
+		log.Info("node print", "name", name, "value", k8sNode)
 		resources := &utils.Resources{
 			Memory:          k8sNode.Status.Capacity.Memory(),
 			MemoryAvailable: k8sNode.Status.Allocatable.Memory(),
