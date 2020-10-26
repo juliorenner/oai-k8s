@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	pkgqueue "github.com/Workiva/go-datastructures/queue"
+	"github.com/go-logr/logr"
 	oaiv1beta1 "github.com/juliorenner/oai-k8s/operator/api/v1beta1"
 	"github.com/juliorenner/oai-k8s/operator/controllers/utils"
 )
@@ -12,14 +13,16 @@ type disaggregation8 struct {
 	nodes               map[string]*utils.Node
 	requestedResources  *utils.RequestedResources
 	networkRequirements *oaiv1beta1.Disaggregation
+	log                 logr.Logger
 }
 
 func NewDsg8(nodes map[string]*utils.Node, requestedResources *utils.RequestedResources,
-	networkRequirements *oaiv1beta1.Disaggregation) *disaggregation8 {
+	networkRequirements *oaiv1beta1.Disaggregation, log logr.Logger) *disaggregation8 {
 	return &disaggregation8{
 		nodes:               nodes,
 		requestedResources:  requestedResources,
 		networkRequirements: networkRequirements,
+		log:                 log,
 	}
 }
 
@@ -111,12 +114,12 @@ func (d *disaggregation8) validateNetwork(path []string, cuNode, duNode string, 
 func (d *disaggregation8) AllocateResources(ru *oaiv1beta1.RUPosition) error {
 	// allocate resources from nodes
 	du := d.nodes[ru.DUNode]
-	if err := du.AllocateResources(d.requestedResources.Memory, d.requestedResources.CPU); err != nil {
+	if err := du.AllocateResources(d.requestedResources.Memory, d.requestedResources.CPU, d.log); err != nil {
 		return fmt.Errorf("error allocating du resources: %w", err)
 	}
 
 	cu := d.nodes[ru.CUNode]
-	if err := cu.AllocateResources(d.requestedResources.Memory, d.requestedResources.CPU); err != nil {
+	if err := cu.AllocateResources(d.requestedResources.Memory, d.requestedResources.CPU, d.log); err != nil {
 		return fmt.Errorf("error allocating cu resources: %w", err)
 	}
 

@@ -50,8 +50,6 @@ func NewPlacementBFS(topology *oaiv1beta1.Topology, disaggregations map[string]*
 	graphNodes := make(map[string]*utils.Node)
 	for name, nodes := range topology.Nodes {
 		k8sNode := k8sNodeMap[name]
-		fmt.Printf("node value: %+v", k8sNode)
-		log.Info("node print", "name", name, "value", k8sNode.Status)
 		resources := &utils.Resources{
 			Memory:          k8sNode.Status.Capacity.Memory(),
 			MemoryAvailable: k8sNode.Status.Allocatable.Memory(),
@@ -90,7 +88,7 @@ func (p *PlacementBFS) Place(rus []*oaiv1beta1.RUPosition) (bool, error) {
 		return false, fmt.Errorf("validation of RU placement failed: %w", err)
 	}
 
-	dsg8 := NewDsg8(p.nodes, p.requestedResources, p.disaggregations[dsg8Key])
+	dsg8 := NewDsg8(p.nodes, p.requestedResources, p.disaggregations[dsg8Key], p.log)
 	for _, ru := range rus {
 		paths := p.findPathsTo(ru.RUNode)
 
@@ -156,7 +154,8 @@ func (p *PlacementBFS) allocateRUsResources(splitsPlacer []*oaiv1beta1.RUPositio
 			"cpu_available", topologyNode.Resources.CPUAvailable.Value(),
 			"memory_request", p.requestedResources.Memory.Value(),
 			"memory_available", topologyNode.Resources.Memory.Value())
-		if err := topologyNode.AllocateResources(p.requestedResources.Memory, p.requestedResources.CPU); err != nil {
+		if err := topologyNode.AllocateResources(p.requestedResources.Memory, p.requestedResources.CPU,
+			p.log); err != nil {
 			return fmt.Errorf("error allocating split '%s' in node '%s'. Not enough resources available: %w",
 				ru.SplitName, ru.RUNode, err)
 		}

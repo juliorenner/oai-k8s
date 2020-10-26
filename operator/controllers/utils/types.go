@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 
+	"github.com/go-logr/logr"
 	oaiv1beta1 "github.com/juliorenner/oai-k8s/operator/api/v1beta1"
 	"k8s.io/apimachinery/pkg/api/resource"
 )
@@ -62,7 +63,9 @@ func (node *Node) HasResources(memory, cpu resource.Quantity) bool {
 		Value()
 }
 
-func (node *Node) AllocateResources(memory, cpu resource.Quantity) error {
+func (node *Node) AllocateResources(memory, cpu resource.Quantity, log logr.Logger) error {
+	log.Info("memory", "mem", node.Resources.MemoryAvailable.Value())
+	log.Info("cpu", "cpu_1", node.Resources.CPUAvailable.Value())
 	node.Resources.MemoryAvailable.Sub(memory)
 	node.Resources.CPUAvailable.Sub(cpu)
 
