@@ -15,7 +15,7 @@ const (
 	RUTemplateConfigMapName     = "operator-ru-template"
 	DisaggregationConfigMapName = "operator-disaggregations"
 
-	DisaggregationKey = "disaggregation"
+	DisaggregationKey = "disaggregations"
 
 	SplitMemoryLimitValue   = 1024
 	SplitMemoryRequestValue = 512

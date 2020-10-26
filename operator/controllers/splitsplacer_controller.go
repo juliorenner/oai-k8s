@@ -211,8 +211,7 @@ func (r *SplitsPlacerReconciler) getSplitTemplate(ru *oaiv1beta1.RUPosition, nam
 	}
 }
 
-func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation map[string]*oaiv1beta1.
-	Disaggregation) error {
+func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation map[string]*oaiv1beta1.Disaggregation) error {
 	cmObjectKey := types.NamespacedName{
 		Namespace: operatorNamespace,
 		Name:      DisaggregationConfigMapName,
@@ -226,18 +225,9 @@ func (r *SplitsPlacerReconciler) readDisaggregationsMetadata(disaggregation map[
 			cmObjectKey.Namespace)
 	}
 
-	disaggregationInt := make(map[string]interface{})
 	disaggregationData := []byte(cm.Data[DisaggregationKey])
-	if err := json.Unmarshal(disaggregationData, &disaggregationInt); err != nil {
+	if err := json.Unmarshal(disaggregationData, &disaggregation); err != nil {
 		return fmt.Errorf("error unmarshaling disaggregation config map data: %w. Data: %s", err, cm.Data[DisaggregationKey])
-	}
-
-	for k, v := range disaggregationInt {
-		d, ok := v.(*oaiv1beta1.Disaggregation)
-		if !ok {
-			return fmt.Errorf("error casting dissagregation interface to struct object. Key: %s", k)
-		}
-		disaggregation[k] = d
 	}
 
 	return nil
