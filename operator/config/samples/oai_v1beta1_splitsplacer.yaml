@@ -7,6 +7,6 @@ spec:
   topologyConfig: "topology"
   rus:
   - splitName: "1"
-    node: "node6"
+    ruNode: "node6"
   - splitName: "2"
-    node: "node6"
+    ruNode: "node6"

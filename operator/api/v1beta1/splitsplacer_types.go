@@ -61,7 +61,7 @@ type SplitsPlacerSpec struct {
 // will be created.
 type RUPosition struct {
 	SplitName string `json:"splitName,omitempty"`
-	RUNode    string `json:"node,omitempty"`
+	RUNode    string `json:"ruNode,omitempty"`
 	// CUNode will be fulfilled by the split placer algorithm
 	CUNode string `json:"cuNode,omitempty"`
 	// DUNode will be fulfilled by the split placer algorithm
