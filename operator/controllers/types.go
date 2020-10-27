@@ -17,10 +17,10 @@ const (
 
 	DisaggregationKey = "disaggregations"
 
-	SplitMemoryLimitValue   = 1024
-	SplitMemoryRequestValue = 512
-	SplitCPULimitValue      = 1000
-	SplitCPURequestValue    = 500
+	SplitMemoryLimitValue   = "1024Mi"
+	SplitMemoryRequestValue = "512Mi"
+	SplitCPULimitValue      = "1000m"
+	SplitCPURequestValue    = "500m"
 
 	operatorNamespace          = "operator-system"
 	cuConfigMapContentTemplate = "upfaddress: %s\nlocaladdress: %s\nsouthaddress: %s\n"

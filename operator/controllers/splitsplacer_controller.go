@@ -269,8 +269,8 @@ func (r *SplitsPlacerReconciler) place(splitsPlacer *oaiv1beta1.SplitsPlacer, to
 	}
 
 	requestedResources := &utils.RequestedResources{
-		Memory: *utils.NewMemoryQuantity(SplitMemoryRequestValue),
-		CPU:    *utils.NewCPUQuantity(SplitCPURequestValue),
+		Memory: *utils.NewQuantity(SplitMemoryRequestValue),
+		CPU:    *utils.NewQuantity(SplitCPURequestValue),
 	}
 
 	topologyGraph := algorithm.NewPlacementBFS(topology, disaggregations, nodeList, requestedResources, log)

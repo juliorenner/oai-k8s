@@ -38,12 +38,9 @@ func (s StringSet) Has(item string) bool {
 	return contained
 }
 
-func NewMemoryQuantity(value int64) *resource.Quantity {
-	return resource.NewQuantity(value, resource.BinarySI)
-}
-
-func NewCPUQuantity(value int64) *resource.Quantity {
-	return resource.NewMilliQuantity(value, resource.DecimalSI)
+func NewQuantity(value string) *resource.Quantity {
+	v := resource.MustParse(value)
+	return &v
 }
 
 type RequestedResources struct {

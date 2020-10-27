@@ -9,6 +9,7 @@ import (
 	"github.com/juliorenner/oai-k8s/operator/controllers/utils"
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
@@ -18,6 +19,24 @@ var topologyJSON = "{\r\n    \"nodes\": {\r\n        \"node1\": {\r\n           
 
 var disaggregationJSON = "{\r\n    \"1\": {\r\n        \"protocolStack\": {\r\n            \"cu\": [\"RRC\", " +
 	"\"PDCP\"],\r\n            \"du\": [\"RLCH\", \"RLCL\", \"MACH\", \"MACL\"],\r\n            \"ru\": [\"PHYH\", \"PHYL\", \"RF\"]\r\n        },\r\n        \"splitOptions\": {\r\n            \"cu-du\": \"O2\",\r\n            \"du-ru\": \"O6\"\r\n        },\r\n        \"backhaul\": {\r\n            \"bandwidth\": 151\r\n        },\r\n        \"midhaul\": {\r\n            \"latency\": 30,\r\n            \"bandwidth\": 151\r\n        },\r\n        \"fronthaul\": {\r\n            \"latency\": 2,\r\n            \"bandwidth\": 152\r\n        },\r\n        \"crosshaul\": {\r\n            \"latency\": 30\r\n        }\r\n    },\r\n    \"2\": {\r\n        \"protocolStack\": {\r\n            \"cu\": [\"RRC\", \"PDCP\"],\r\n            \"du\": [],\r\n            \"ru\": [\"RLCH\", \"RLCL\", \"MACH\", \"MACL\", \"PHYH\", \"PHYL\", \"RF\"]\r\n        },\r\n        \"backhaul\": {\r\n            \"bandwidth\": 151\r\n        },\r\n        \"midhaul\": {},\r\n        \"fronthaul\": {\r\n            \"bandwidth\": 151\r\n        },\r\n        \"crosshaul\": {\r\n            \"latency\": 30\r\n        }\r\n    },\r\n    \"3\": {\r\n        \"protocolStack\": {\r\n            \"cu\": [\"RRC\", \"PDCP\", \"RLCH\", \"RLCL\", \"MACH\", \"MACL\"],\r\n            \"du\": [],\r\n            \"ru\": [\"PHYH\", \"PHYL\", \"RF\"]\r\n        },\r\n        \"backhaul\": {\r\n            \"bandwidth\": 151\r\n        },\r\n        \"midhaul\": {},\r\n        \"fronthaul\": {\r\n            \"latency\": 2,\r\n            \"bandwidth\": 152\r\n        },\r\n        \"crosshaul\": {\r\n            \"latency\": 30\r\n        }\r\n    },\r\n    \"4\": {\r\n        \"protocolStack\": {\r\n            \"cu\": [\"RRC\", \"PDCP\", \"RLCH\", \"RLCL\", \"MACH\", \"MACL\", \"PHYH\", \"PHYL\", \"RF\"],\r\n            \"du\": [],\r\n            \"ru\": []\r\n        },\r\n        \"backhaul\": {},\r\n        \"midhaul\": {},\r\n        \"fronthaul\": {},\r\n        \"crosshaul\": {\r\n            \"latency\": 30\r\n        }\r\n    }\r\n}"
+
+func TestQuantity(t *testing.T) {
+	memory := utils.NewQuantity("500Mi")
+	cpu := utils.NewQuantity("500m")
+
+	memoryNode := utils.NewQuantity("16397940Ki")
+	cpuNode := utils.NewQuantity("3800m")
+
+	fmt.Println(memoryNode.ScaledValue(resource.Mega))
+
+	memoryNode.Sub(*memory)
+	cpuNode.Sub(*cpu)
+
+	fmt.Println(memoryNode.Value())
+	fmt.Println(cpuNode.Value())
+	fmt.Println(memoryNode.ScaledValue(resource.Mega))
+	fmt.Println(cpuNode)
+}
 
 func TestPlacementAlgorithm(t *testing.T) {
 	disaggregation := map[string]*oaiv1beta1.Disaggregation{}
@@ -29,8 +48,8 @@ func TestPlacementAlgorithm(t *testing.T) {
 	log := zap.New(zap.UseDevMode(true))
 	k8sNode := generateNodeList()
 	requestedResources := &utils.RequestedResources{
-		Memory: *utils.NewMemoryQuantity(512),
-		CPU:    *utils.NewCPUQuantity(500),
+		Memory: *utils.NewQuantity("512Mi"),
+		CPU:    *utils.NewQuantity("500m"),
 	}
 
 	testCases := []struct {
@@ -104,12 +123,12 @@ func generateNodeList() *v1.NodeList {
 			},
 			Status: v1.NodeStatus{
 				Capacity: v1.ResourceList{
-					v1.ResourceCPU:    *utils.NewCPUQuantity(5000),
-					v1.ResourceMemory: *utils.NewMemoryQuantity(8192),
+					v1.ResourceCPU:    *utils.NewQuantity("5000m"),
+					v1.ResourceMemory: *utils.NewQuantity("8192Mi"),
 				},
 				Allocatable: v1.ResourceList{
-					v1.ResourceCPU:    *utils.NewCPUQuantity(4000),
-					v1.ResourceMemory: *utils.NewMemoryQuantity(6144),
+					v1.ResourceCPU:    *utils.NewQuantity("4000m"),
+					v1.ResourceMemory: *utils.NewQuantity("6144Mi"),
 				},
 			},
 		}

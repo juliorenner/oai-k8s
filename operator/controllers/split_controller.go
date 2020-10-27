@@ -543,12 +543,12 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 							},
 							Resources: v1.ResourceRequirements{
 								Limits: v1.ResourceList{
-									v1.ResourceMemory: *utils.NewMemoryQuantity(SplitMemoryLimitValue),
-									v1.ResourceCPU:    *utils.NewCPUQuantity(SplitCPULimitValue),
+									v1.ResourceMemory: *utils.NewQuantity(SplitMemoryLimitValue),
+									v1.ResourceCPU:    *utils.NewQuantity(SplitCPULimitValue),
 								},
 								Requests: v1.ResourceList{
-									v1.ResourceMemory: *utils.NewMemoryQuantity(SplitMemoryRequestValue),
-									v1.ResourceCPU:    *utils.NewCPUQuantity(SplitCPURequestValue),
+									v1.ResourceMemory: *utils.NewQuantity(SplitMemoryRequestValue),
+									v1.ResourceCPU:    *utils.NewQuantity(SplitCPURequestValue),
 								},
 							},
 						},
