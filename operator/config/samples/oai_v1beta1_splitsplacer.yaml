@@ -2,6 +2,7 @@ apiVersion: oai.unisinos/v1beta1
 kind: SplitsPlacer
 metadata:
   name: splitsplacer-sample
+  namespace: oai
 spec:
   coreIP: 10.233.105.76
   topologyConfig: "topology"
