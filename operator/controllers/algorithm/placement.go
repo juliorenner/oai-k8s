@@ -57,11 +57,6 @@ func NewPlacementBFS(topology *oaiv1beta1.Topology, disaggregations map[string]*
 			CPUAvailable:    k8sNode.Status.Allocatable.Cpu(),
 		}
 
-		log.Info("allocatable info", "cpu", k8sNode.Status.Allocatable.Cpu().Value(), "cpu_1",
-			k8sNode.Status.Allocatable[v1.ResourceCPU], "memory", k8sNode.Status.Allocatable.Memory().Value(),
-			"memory_1",
-			k8sNode.Status.Allocatable[v1.ResourceMemory])
-
 		graphNodes[name] = &utils.Node{NodeName: name, Links: make(map[string]*utils.Link), Resources: resources}
 		if nodes.Core {
 			core = name
@@ -151,10 +146,6 @@ func (p *PlacementBFS) findPathsTo(nodeToFind string) [][]string {
 func (p *PlacementBFS) allocateRUsResources(splitsPlacer []*oaiv1beta1.RUPosition) error {
 	for _, ru := range splitsPlacer {
 		topologyNode := p.nodes[ru.RUNode]
-		p.log.Info("allocating resources", "cpu_request", p.requestedResources.CPU.Value(),
-			"cpu_available", topologyNode.Resources.CPUAvailable.Value(),
-			"memory_request", p.requestedResources.Memory.Value(),
-			"memory_available", topologyNode.Resources.Memory.Value())
 		if err := topologyNode.AllocateResources(p.requestedResources.Memory, p.requestedResources.CPU,
 			p.log); err != nil {
 			return fmt.Errorf("error allocating split '%s' in node '%s'. Not enough resources available: %w",

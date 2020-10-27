@@ -102,6 +102,7 @@ func (d *disaggregation8) validateNetwork(path []string, cuNode, duNode string, 
 				if err := link.AllocateResources(requirement.Bandwidth); err != nil {
 					return false, fmt.Errorf("error allocating resources: %w", err)
 				}
+				d.log.Info("remaining link bandwidth", "bandwidth", link.AvailableBandwidth)
 			} else if !link.HasResources(requirement.Bandwidth, requirement.Latency) {
 				return false, nil
 			}
