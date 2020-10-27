@@ -63,13 +63,13 @@ spec:
                   duNode:
                     description: DUNode will be fulfilled by the split placer algorithm
                     type: string
-                  node:
-                    type: string
                   path:
                     description: Path will be fulfilled by the split placer algorithm
                     items:
                       type: string
                     type: array
+                  ruNode:
+                    type: string
                   splitName:
                     type: string
                 type: object
