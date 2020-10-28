@@ -5,7 +5,7 @@ metadata:
   namespace: oai
   labels:
     "topology": "true"
-    "default-test": true
+    "default-test": "true"
 data:
   topology: |
     {
