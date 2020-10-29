@@ -64,15 +64,19 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	if splitsPlacer.Status.State == oaiv1beta1.PlacerStateFinished && !splitsPlacer.Spec.Retrigger {
-		log.Info("Skipping reconcile. Status Finished and retrigger not enabled.", logSplitKey, splitsPlacer.Name)
+	//if splitsPlacer.Status.State == oaiv1beta1.PlacerStateFinished && !splitsPlacer.Spec.Retrigger {
+	if splitsPlacer.Status.State != "" {
+		//log.Info("Skipping reconcile. Status Finished and retrigger not enabled.", logSplitKey, splitsPlacer.Name)
+		log.Info("Skipping reconcile, it already executed...")
 		return ctrl.Result{}, nil
 	}
 
 	if err := r.syncTopology(splitsPlacer, log); err != nil {
-		if err := r.updateStatus(splitsPlacer, oaiv1beta1.PlacerStateError); err != nil {
-			log.Error(err, "error updating splits placer status after error syncing topology")
+		if errStatus := r.updateStatus(splitsPlacer, oaiv1beta1.PlacerStateError); errStatus != nil {
+			log.Error(errStatus, "error updating splits placer status after error syncing topology")
 		}
+		r.Recorder.Event(splitsPlacer, v1.EventTypeWarning, "Error", fmt.Sprintf("error syncing topology: %s",
+			err.Error()))
 		return ctrl.Result{}, fmt.Errorf("error syncing topology: %s", err)
 	}
 
