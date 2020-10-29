@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"errors"
 	"fmt"
 
 	pkgqueue "github.com/Workiva/go-datastructures/queue"
@@ -64,6 +65,7 @@ func (d *disaggregation8) Validate(ru *oaiv1beta1.RUPosition, paths [][]string) 
 	}
 
 	if len(validation.positions) == 0 {
+		d.log.Error(errors.New("not enough resources remaining"), "no nodes with available resources")
 		return false, nil
 	}
 
@@ -75,6 +77,7 @@ func (d *disaggregation8) Validate(ru *oaiv1beta1.RUPosition, paths [][]string) 
 		}
 	}
 
+	d.log.Error(errors.New("network requirements not match"), "no nodes with network requirements")
 	return false, nil
 }
 
