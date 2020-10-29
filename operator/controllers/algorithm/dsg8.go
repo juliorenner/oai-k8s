@@ -73,6 +73,7 @@ func (d *disaggregation8) Validate(ru *oaiv1beta1.RUPosition, paths [][]string) 
 	for p, candidate := range validation.positions {
 		if isValid, _ := d.validateNetwork(paths[p], candidate.cuNodeName, candidate.duNodeName,
 			false); isValid {
+			d.log.Info("found possible allocation", "path", candidate.path)
 			return true, candidate
 		}
 	}
