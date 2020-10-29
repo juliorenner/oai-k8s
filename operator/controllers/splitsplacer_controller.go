@@ -293,7 +293,7 @@ func (r *SplitsPlacerReconciler) place(splitsPlacer *oaiv1beta1.SplitsPlacer, to
 	if err != nil {
 		return err
 	} else if !success {
-		return errors.New("not possible to allocate all RUs")
+		return errors.New("unable to allocate all RUs")
 	}
 
 	return nil

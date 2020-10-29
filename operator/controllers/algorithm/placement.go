@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"errors"
 	"fmt"
 
 	pkgqueue "github.com/Workiva/go-datastructures/queue"
@@ -99,6 +100,8 @@ func (p *PlacementBFS) Place(rus []*oaiv1beta1.RUPosition) (bool, error) {
 			}
 			continue
 		} else {
+			p.log.Error(errors.New("disaggregation allocation not possible"),
+				"not possible to allocate using disaggregation 8", "ru", ru.SplitName)
 			return false, nil
 		}
 	}
