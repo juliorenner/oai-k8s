@@ -136,9 +136,9 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 
 	for k, v := range topology.Links {
 		if splitsPlacer.Status.RemainingBandwidth == nil {
-			splitsPlacer.Status.RemainingBandwidth = make(map[string]float32)
+			splitsPlacer.Status.RemainingBandwidth = make(map[string]string)
 		}
-		splitsPlacer.Status.RemainingBandwidth[k] = v.LinkCapacity
+		splitsPlacer.Status.RemainingBandwidth[k] = fmt.Sprintf("%f", v.LinkCapacity)
 	}
 
 	if err != nil {

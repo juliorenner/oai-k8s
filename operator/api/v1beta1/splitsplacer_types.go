@@ -74,8 +74,8 @@ type RUPosition struct {
 
 // SplitsPlacerStatus defines the observed state of SplitsPlacer
 type SplitsPlacerStatus struct {
-	State              SplitsPlacerState  `json:"state,omitempty"`
-	RemainingBandwidth map[string]float32 `json:"remainingBandwidth,omitempty"`
+	State              SplitsPlacerState `json:"state,omitempty"`
+	RemainingBandwidth map[string]string `json:"remainingBandwidth,omitempty"`
 }
 
 // +kubebuilder:object:root=true
