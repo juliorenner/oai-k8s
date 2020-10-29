@@ -77,7 +77,7 @@ func (d *disaggregation8) Validate(ru *oaiv1beta1.RUPosition, paths [][]string) 
 		}
 	}
 
-	d.log.Info("network requirement validation", "paths", paths, "")
+	d.log.Info("network requirement validation", "paths", paths)
 	d.log.Error(errors.New("network requirements not match"), "no nodes with network requirements")
 	return false, nil
 }
