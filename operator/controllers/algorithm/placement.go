@@ -25,6 +25,7 @@ type PlacementBFS struct {
 	topology           *oaiv1beta1.Topology
 	disaggregations    map[string]*oaiv1beta1.Disaggregation
 	requestedResources *utils.RequestedResources
+	remainingBandwidth map[string]*utils.Link
 	nodes              map[string]*utils.Node
 	cachePaths         map[string][][]string
 	log                logr.Logger
@@ -63,6 +64,7 @@ func NewPlacementBFS(topology *oaiv1beta1.Topology, disaggregations map[string]*
 		}
 	}
 
+	remainingBandwidth := map[string]*utils.Link{}
 	for linkName, link := range topology.Links {
 		srcGraph := graphNodes[link.Source.Node]
 		dstGraph := graphNodes[link.Destination.Node]
@@ -73,10 +75,11 @@ func NewPlacementBFS(topology *oaiv1beta1.Topology, disaggregations map[string]*
 		}
 		srcGraph.Links[link.Destination.Node] = v
 		dstGraph.Links[link.Source.Node] = v
+		remainingBandwidth[linkName] = v
 	}
 
 	return &PlacementBFS{root: core, topology: topology, nodes: graphNodes, disaggregations: disaggregations,
-		requestedResources: requestedResources, log: log}
+		requestedResources: requestedResources, remainingBandwidth: remainingBandwidth, log: log}
 }
 
 func (p *PlacementBFS) Place(rus []*oaiv1beta1.RUPosition) (bool, error) {
@@ -101,6 +104,10 @@ func (p *PlacementBFS) Place(rus []*oaiv1beta1.RUPosition) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (p *PlacementBFS) GetRemainingBandwidth() map[string]*utils.Link {
+	return p.remainingBandwidth
 }
 
 func fulfillRU(ru *oaiv1beta1.RUPosition, finalPos *position) {

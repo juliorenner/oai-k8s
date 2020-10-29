@@ -134,13 +134,6 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 
 	err := r.place(splitsPlacer, topology, disaggregation, log)
 
-	for k, v := range topology.Links {
-		if splitsPlacer.Status.RemainingBandwidth == nil {
-			splitsPlacer.Status.RemainingBandwidth = make(map[string]string)
-		}
-		splitsPlacer.Status.RemainingBandwidth[k] = fmt.Sprintf("%f", v.LinkCapacity)
-	}
-
 	if err != nil {
 		return fmt.Errorf("error placing service functions: %w", err)
 	}
@@ -284,7 +277,16 @@ func (r *SplitsPlacerReconciler) place(splitsPlacer *oaiv1beta1.SplitsPlacer, to
 
 	topologyGraph := algorithm.NewPlacementBFS(topology, disaggregations, nodeList, requestedResources, log)
 
-	if success, err := topologyGraph.Place(splitsPlacer.Spec.RUs); err != nil {
+	success, err := topologyGraph.Place(splitsPlacer.Spec.RUs)
+
+	for k, v := range topologyGraph.GetRemainingBandwidth() {
+		if splitsPlacer.Status.RemainingBandwidth == nil {
+			splitsPlacer.Status.RemainingBandwidth = make(map[string]string)
+		}
+		splitsPlacer.Status.RemainingBandwidth[k] = fmt.Sprintf("%f", v.AvailableBandwidth)
+	}
+
+	if err != nil {
 		return err
 	} else if !success {
 		return errors.New("not possible to allocate all RUs")
