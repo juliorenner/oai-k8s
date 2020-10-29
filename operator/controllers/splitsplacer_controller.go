@@ -58,6 +58,8 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 	ctx := context.Background()
 	log := r.Log.WithValues("splitsplacer", req.NamespacedName)
 
+	log.Info("splits placer request received")
+
 	splitsPlacer := &oaiv1beta1.SplitsPlacer{}
 	if err := r.Get(ctx, req.NamespacedName, splitsPlacer); err != nil {
 		log.Error(err, "unable to fetch SplitsPlacer")
