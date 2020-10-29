@@ -132,7 +132,16 @@ func (r *SplitsPlacerReconciler) syncTopology(splitsPlacer *oaiv1beta1.SplitsPla
 		return fmt.Errorf("error reading disaggregation metadata: %w", err)
 	}
 
-	if err := r.place(splitsPlacer, topology, disaggregation, log); err != nil {
+	err := r.place(splitsPlacer, topology, disaggregation, log)
+
+	for k, v := range topology.Links {
+		if splitsPlacer.Status.RemainingBandwidth == nil {
+			splitsPlacer.Status.RemainingBandwidth = make(map[string]float32)
+		}
+		splitsPlacer.Status.RemainingBandwidth[k] = v.LinkCapacity
+	}
+
+	if err != nil {
 		return fmt.Errorf("error placing service functions: %w", err)
 	}
 

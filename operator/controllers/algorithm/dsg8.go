@@ -85,12 +85,14 @@ func (d *disaggregation8) validateNetwork(path []string, cuNode, duNode string, 
 
 	placementNodes := utils.NewStringSet(path[0], cuNode, duNode)
 
+	var totalLatency float32
 	var requirement *oaiv1beta1.NetworkRequirements
 	// Check if links have the required resources
 	for i, nodeName := range path {
 		if placementNodes.Has(nodeName) {
 			r, _ := disaggregationQueue.Get(1)
 			requirement = r[0].(*oaiv1beta1.NetworkRequirements)
+			totalLatency = 0
 		}
 
 		node := d.nodes[nodeName]
@@ -98,12 +100,14 @@ func (d *disaggregation8) validateNetwork(path []string, cuNode, duNode string, 
 			nextNodeName := path[i+1]
 			link := node.Links[nextNodeName]
 
+			totalLatency += link.Latency
 			if allocateResources {
 				if err := link.AllocateResources(requirement.Bandwidth); err != nil {
 					return false, fmt.Errorf("error allocating resources: %w", err)
 				}
 				d.log.Info("remaining link bandwidth", "bandwidth", link.AvailableBandwidth)
-			} else if !link.HasResources(requirement.Bandwidth, requirement.Latency) {
+			} else if !link.HasBandwidth(requirement.Bandwidth) ||
+				(requirement.Latency > 0 && totalLatency > requirement.Latency) {
 				return false, nil
 			}
 		}

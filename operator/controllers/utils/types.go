@@ -89,11 +89,8 @@ type Link struct {
 	Latency            float32
 }
 
-func (v *Link) HasResources(requiredBandwidth, requiredLatency float32) bool {
-	if requiredLatency == 0 {
-		return v.AvailableBandwidth >= requiredBandwidth
-	}
-	return v.AvailableBandwidth >= requiredBandwidth && v.Latency <= requiredLatency
+func (v *Link) HasBandwidth(requiredBandwidth float32) bool {
+	return v.AvailableBandwidth >= requiredBandwidth
 }
 
 func (v *Link) AllocateResources(requiredBandwidth float32) error {
