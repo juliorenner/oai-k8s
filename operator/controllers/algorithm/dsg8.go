@@ -78,8 +78,7 @@ func (d *disaggregation8) Validate(ru *oaiv1beta1.RUPosition, paths [][]string) 
 		}
 	}
 
-	d.log.Info("network requirement validation", "paths", paths)
-	d.log.Error(errors.New("network requirements not match"), "no nodes with network requirements")
+	d.log.Info("no nodes with network requirements", "ru", ru.SplitName)
 	return false, nil
 }
 
@@ -108,7 +107,7 @@ func (d *disaggregation8) validateNetwork(path []string, cuNode, duNode string, 
 			link := node.Links[nextNodeName]
 
 			totalLatency += link.Latency
-			d.log.Info("network info", "link", link.LinkName, "bandwidth", link.AvailableBandwidth,
+			d.log.Info("network info", "link", link.LinkName, "available bandwidth", link.AvailableBandwidth,
 				"required bandwidth", requirement.Bandwidth,
 				"total latency", totalLatency, "required latency", requirement.Latency, "node", nodeName,
 				"nextNodeName", nextNodeName)
@@ -116,9 +115,10 @@ func (d *disaggregation8) validateNetwork(path []string, cuNode, duNode string, 
 				if err := link.AllocateResources(requirement.Bandwidth); err != nil {
 					return false, fmt.Errorf("error allocating resources: %w", err)
 				}
-				//d.log.Info("remaining link bandwidth", "link", link.LinkName, "bandwidth", link.AvailableBandwidth)
+				d.log.Info("remaining link bandwidth", "link", link.LinkName, "bandwidth", link.AvailableBandwidth)
 			} else if !link.HasBandwidth(requirement.Bandwidth) ||
 				(requirement.Latency > 0 && totalLatency > requirement.Latency) {
+				d.log.Info("error: link without required resources", "node", nodeName, "next node", nextNodeName)
 				return false, nil
 			}
 		}

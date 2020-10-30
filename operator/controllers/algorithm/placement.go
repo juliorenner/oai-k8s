@@ -92,13 +92,14 @@ func (p *PlacementBFS) Place(rus []*oaiv1beta1.RUPosition) (bool, error) {
 	for _, ru := range rus {
 		paths := p.findPathsTo(ru.RUNode)
 
+		p.log.Info("starting ru validation", "ru name", ru.SplitName, "paths", paths)
+
 		if possible, splitPos := dsg8.Validate(ru, paths); possible {
 			fulfillRU(ru, splitPos)
 
 			if err := dsg8.AllocateResources(ru); err != nil {
 				return false, fmt.Errorf("error updating resources: %w", err)
 			}
-			continue
 		} else {
 			p.log.Error(errors.New("disaggregation allocation not possible"),
 				"not possible to allocate using disaggregation 8", "ru", ru.SplitName)
