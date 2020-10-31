@@ -69,6 +69,9 @@ type SplitStatus struct {
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="CU NODE",type=string,JSONPath=`.spec.cuNode`
+// +kubebuilder:printcolumn:name="DU NODE",type=string,JSONPath=`.spec.duNode`
+// +kubebuilder:printcolumn:name="RU NODE",type=string,JSONPath=`.spec.ruNode`
 // +kubebuilder:printcolumn:name="STATUS",type=string,JSONPath=`.status.state`
 // Split is the Schema for the splits API
 type Split struct {
