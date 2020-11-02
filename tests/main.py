@@ -1,6 +1,7 @@
 import argparse
 import time
 import os
+import logging
 
 import utils.constants as constants
 
@@ -13,13 +14,19 @@ def TestSplitsPlacer(exec_number):
         topology_name = "bw-max-delay-min.yaml"
         splitsplacer = SplitsPlacer(topology_name)
 
+        logging.info("creating splitsplacer")
         splitsplacer.create()
+        logging.info("waiting to be finished")
         splitsplacer.wait_to_be_finished()
 
+        logging.info("collecting results")
         result = splitsplacer.collect_result()
+        logging.info("outputing results")
         output_result(result, topology_name, n)
 
+        logging.info("deleting splitsplacer")
         splitsplacer.delete()
+        logging.info("waiting for clean up to finish")
         wait_cleanup_finished()
 
 
