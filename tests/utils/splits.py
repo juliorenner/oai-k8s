@@ -132,6 +132,10 @@ class Splits:
         for s in splits:
             creation_timestamp[s["metadata"]["name"]
                                ] = s["metadata"]["creationTimestamp"]
+            if "status" not in s:
+                n = s["metadata"]["name"]
+                logging.info(f"split {n} does not have status")
+                time.sleep(30)
             placement[s["metadata"]["name"]] = {
                 "cu": s["status"]["cuNode"],
                 "du": s["status"]["duNode"],
