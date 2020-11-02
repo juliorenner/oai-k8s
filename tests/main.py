@@ -58,7 +58,7 @@ def wait_cleanup_finished():
 
 def output_start_end_times():
     o_file = open("{}/results/{}.txt".format(os.getcwd(), "times"), "a")
-    now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    now = datetime.now().strftime("%d/%m/%Y %H:%M:%S\n")
     o_file.write(f"now: {now}")
 
     o_file.close()
