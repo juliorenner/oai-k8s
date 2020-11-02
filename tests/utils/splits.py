@@ -127,6 +127,7 @@ class Splits:
 
             initialization_time[pod.metadata.name] = timestamp
 
+        splits = self.get()
         placement = {}
         creation_timestamp = {}
         for s in splits:
