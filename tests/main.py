@@ -57,11 +57,11 @@ def wait_cleanup_finished():
 
 
 def output_start_end_times():
-    logs_file = open("{}/results/{}.txt".format(os.getcwd(), "times"), "a")
+    o_file = open("{}/results/{}.txt".format(os.getcwd(), "times"), "a")
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    logs_files.write(f"now: {now}")
+    o_file.write(f"now: {now}")
 
-    logs_file.close()
+    o_file.close()
 
 def main():
     parser = argparse.ArgumentParser(
