@@ -10,10 +10,9 @@ from utils.splitsplacer import SplitsPlacer
 
 logging.basicConfig(level = logging.INFO)
 
-def TestSplitsPlacer(exec_number):
+def TestSplitsPlacer(exec_number: int, topology_name: str):
 
     for n in range(exec_number):
-        topology_name = "bw-max-delay-min.yaml"
         splitsplacer = SplitsPlacer(topology_name)
 
         try:
@@ -58,10 +57,12 @@ def wait_cleanup_finished():
 def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--number-of-executions', type=int,default=5)
+    parser.add_argument('--number-of-executions', type=int,default=30)
     
     args = parser.parse_args()
 
-    TestSplitsPlacer(args.number_of_executions)
+    TestSplitsPlacer(args.number_of_executions, "bw-max-delay-min.yaml")
+    TestSplitsPlacer(args.number_of_executions, "bw-min-link-delay.yaml")
+    TestSplitsPlacer(args.number_of_executions, "bw-random-link-delay.yaml")
 
 main()
