@@ -198,7 +198,7 @@ func getImageName(splitName SplitPiece) string {
 	case RU:
 		imageName = ueSoftModemImageName
 	}
-	return fmt.Sprintf("%s/%s:latest", dockerRepository, imageName)
+	return fmt.Sprintf("%s/%s:1", dockerRepository, imageName)
 }
 
 func (r *SplitReconciler) syncConfigMaps(instance *oaiv1beta1.Split, log logr.Logger) error {
