@@ -121,15 +121,20 @@ class SplitsPlacer:
         links_bandwidth = splitsplacer["status"]["remainingBandwidth"]
         creation_timestamp = splitsplacer["metadata"]["creationTimestamp"]
 
-        pods = K8S.list_pods()
         while True:
+            pods = K8S.list_pods()
             ready = True
             for pod in pods.items:
                 if pod.status.phase != "Running":
+                    logging.info(f"pod {pod.metadata.name} in state {pod.status.phase}")
                     ready = False
                     break
             if ready:
+                logging.info("all pods running")
                 break
+            
+            logging.info("")
+            time.sleep(5)
 
         initialization_time = {}
         for pod in pods.items:
