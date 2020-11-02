@@ -60,5 +60,6 @@ def main():
     
     args = parser.parse_args()
 
+    TestSplitsPlacer(args.number_of_executions)
 
 main()
