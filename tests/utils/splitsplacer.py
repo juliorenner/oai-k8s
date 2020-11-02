@@ -138,6 +138,8 @@ class SplitsPlacer:
             
             time.sleep(5)
 
+        logging.info(f"pods: {pods}")
+
         initialization_time = {}
         for pod in pods.items:
             logging.info(f"getting logs for pod {pod.metadata.name}")
