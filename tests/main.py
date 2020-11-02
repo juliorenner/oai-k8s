@@ -8,6 +8,8 @@ import utils.constants as constants
 from utils.k8s import K8S
 from utils.splitsplacer import SplitsPlacer
 
+logging.basicConfig(level = logging.INFO)
+
 def TestSplitsPlacer(exec_number):
 
     for n in range(exec_number):
