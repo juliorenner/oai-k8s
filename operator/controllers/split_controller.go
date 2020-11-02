@@ -515,7 +515,7 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 						{
 							Name:            string(split),
 							Image:           getImageName(split),
-							ImagePullPolicy: v1.PullAlways,
+							ImagePullPolicy: v1.PullNever,
 							VolumeMounts: []v1.VolumeMount{
 								{
 									Name:      "template",

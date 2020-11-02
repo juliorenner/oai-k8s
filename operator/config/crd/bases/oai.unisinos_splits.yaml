@@ -9,13 +9,13 @@ metadata:
   name: splits.oai.unisinos
 spec:
   additionalPrinterColumns:
-  - JSONPath: .spec.cuNode
+  - JSONPath: .status.cuNode
     name: CU NODE
     type: string
-  - JSONPath: .spec.duNode
+  - JSONPath: .status.duNode
     name: DU NODE
     type: string
-  - JSONPath: .spec.ruNode
+  - JSONPath: .status.ruNode
     name: RU NODE
     type: string
   - JSONPath: .status.state
