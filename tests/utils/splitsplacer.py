@@ -133,12 +133,12 @@ class SplitsPlacer:
                 logging.info("all pods running")
                 break
             
-            logging.info("")
             time.sleep(5)
 
         initialization_time = {}
         for pod in pods.items:
-            pod_logs = K8S.logs(pod).split("\n")
+            logging.info(f"getting logs for pod {pod.metadata.name}")
+            pod_logs = K8S.logs(pod.metadata.name).split("\n")
 
             timestamp = pod_logs[0]
 
