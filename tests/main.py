@@ -3,6 +3,8 @@ import time
 import os
 import logging
 
+from datetime import datetime
+
 import utils.constants as constants
 
 from utils.k8s import K8S
@@ -54,15 +56,26 @@ def wait_cleanup_finished():
         pods = K8S.list_pods()
 
 
+def output_start_end_times:
+    logs_file = open("{}/results/{}.txt".format(os.getcwd(), "times"), "a")
+    now = datetime.now()
+    logs_files.write(f"time: {now.strftime("%d/%m/%Y %H:%M:%S")}")
+
+    logs_file.close()
+
 def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--number-of-executions', type=int,default=30)
     
     args = parser.parse_args()
+    
+    output_start_end_times()
 
     TestSplitsPlacer(args.number_of_executions, "bw-max-delay-min.yaml")
     TestSplitsPlacer(args.number_of_executions, "bw-min-link-delay.yaml")
     TestSplitsPlacer(args.number_of_executions, "bw-random-link-delay.yaml")
+
+    output_start_end_times()
 
 main()
