@@ -1,6 +1,7 @@
 import logging
 import os
 import yaml
+import time
 
 from utils.k8s import K8S
 import utils.constants as constants
@@ -120,7 +121,12 @@ class SplitsPlacer:
         links_bandwidth = splitsplacer["status"]["remainingBandwidth"]
         creation_timestamp = splitsplacer["metadata"]["creationTimestamp"]
 
-        pods = K8S.list_pods()
+        while True:
+            pods = K8S.list_pods()
+            for pod in pods.items:
+                if pod["status"]["phase"] != "Running":
+                    time.sleep(5)
+                    break
 
         initialization_time = {}
         for pod in pods.items:
