@@ -124,11 +124,14 @@ class SplitsPlacer:
         while True:
             pods = K8S.list_pods()
             ready = True
-            for pod in pods.items:
-                if pod.status.phase != "Running":
-                    logging.info(f"pod {pod.metadata.name} in state {pod.status.phase}")
-                    ready = False
-                    break
+            if len(pods.items) < len(splitsplacer["spec"]["rus"]) * 3:
+                ready = False
+            else:
+                for pod in pods.items:
+                    if pod.status.phase != "Running":
+                        logging.info(f"pod {pod.metadata.name} in state {pod.status.phase}")
+                        ready = False
+                        break
             if ready:
                 logging.info("all pods running")
                 break
