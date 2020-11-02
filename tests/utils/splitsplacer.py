@@ -123,7 +123,7 @@ class SplitsPlacer:
         pods = K8S.list_pods()
 
         initialization_time = {}
-        for pod in pods:
+        for pod in pods.items:
             pod_logs = K8S.logs(pod).split("\n")
 
             timestamp = pod_logs[0]
