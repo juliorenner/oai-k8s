@@ -1,5 +1,6 @@
 CRD_GROUP = "oai.unisinos"
 CRD_KIND_SPLITSPLACER="splitsplacers"
+CRD_KIND_SPLITS="splits"
 APIVERSION_V1BETA1="v1beta1"
 NAMESPACE_OAI="oai"
 

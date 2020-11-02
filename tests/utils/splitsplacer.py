@@ -37,7 +37,6 @@ class SplitsPlacer:
                                                           body=self.splitsplacer)
             self.splitsplacer = res
         except ApiException as err:
-            print(err)
             if err.status != 409:
                 logging.error(
                     f"[SPLITSPLACER] Error creating SplitsPlacer: {err}")
