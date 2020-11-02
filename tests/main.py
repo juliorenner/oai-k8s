@@ -34,7 +34,7 @@ def TestSplitsPlacer(exec_number):
 
 
 def output_result(result: object, file_name: str, exec_number: int):
-    logs_file = open("{}/tests/results/{}.txt".format(os.getcwd(), file_name.split(".")[0]), "a")
+    logs_file = open("{}/results/{}.txt".format(os.getcwd(), file_name.split(".")[0]), "a")
     logs_file.write(f"Execution {exec_number}:\n")
     logs_file.write("State: {}\n".format(result["state"]))
     if result["state"] == constants.STATUS_ERROR:
