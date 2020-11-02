@@ -138,8 +138,6 @@ class SplitsPlacer:
             
             time.sleep(5)
 
-        logging.info(f"pods: {pods}")
-
         initialization_time = {}
         for pod in pods.items:
             logging.info(f"getting logs for pod {pod.metadata.name}")
@@ -147,7 +145,7 @@ class SplitsPlacer:
 
             timestamp = pod_logs[0]
 
-            initialization_time[pod] = timestamp
+            initialization_time[pod.metadata.name] = timestamp
 
         return {
             "links_bandwidth": links_bandwidth,
