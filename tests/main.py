@@ -30,6 +30,7 @@ def TestSplitsPlacer(exec_number: int, topology_name: str):
             logging.info("outputing results")
             output_result(result, topology_name, n)
         finally:
+            time.sleep(50)
             logging.info("deleting splitsplacer")
             splitsplacer.delete()
             logging.info("waiting for clean up to finish")
@@ -51,6 +52,7 @@ def TestSplits(exec_number: int):
 
             output_result(result, template_file, n)
         finally:
+            time.sleep(50)
             logging.info("deleting splits")
             splits.delete()
             logging.info("waiting for clean up to finish")
