@@ -124,7 +124,7 @@ class SplitsPlacer:
         while True:
             pods = K8S.list_pods()
             for pod in pods.items:
-                if pod["status"]["phase"] != "Running":
+                if pod.status.phase != "Running":
                     time.sleep(5)
                     break
 
