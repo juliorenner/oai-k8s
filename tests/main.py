@@ -115,9 +115,9 @@ def main():
 
     TestSplits(args.number_of_executions)
 
-    # TestSplitsPlacer(args.number_of_executions, "bw-max-delay-min.yaml")
-    # TestSplitsPlacer(args.number_of_executions, "bw-min-link-delay.yaml")
-    # TestSplitsPlacer(args.number_of_executions, "bw-random-link-delay.yaml")
+    TestSplitsPlacer(args.number_of_executions, "bw-max-delay-min.yaml")
+    TestSplitsPlacer(args.number_of_executions, "bw-min-link-delay.yaml")
+    TestSplitsPlacer(args.number_of_executions, "bw-random-link-delay.yaml")
 
     output_start_end_times()
 

@@ -147,6 +147,7 @@ class SplitsPlacer:
             initialization_time[pod.metadata.name] = timestamp
 
         return {
+            "placement": splitsplacer["spec"]["rus"],
             "links_bandwidth": links_bandwidth,
             "creation_timestamp": creation_timestamp,
             "initialization_time": initialization_time,
