@@ -56,10 +56,10 @@ def wait_cleanup_finished():
         pods = K8S.list_pods()
 
 
-def output_start_end_times:
+def output_start_end_times():
     logs_file = open("{}/results/{}.txt".format(os.getcwd(), "times"), "a")
-    now = datetime.now()
-    logs_files.write(f"time: {now.strftime("%d/%m/%Y %H:%M:%S")}")
+    now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    logs_files.write(f"now: {now}")
 
     logs_file.close()
 
