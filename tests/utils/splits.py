@@ -152,7 +152,7 @@ class Splits:
                 if s["metadata"]["name"] == split_name:
                     creation_time = datetime.strptime(s["metadata"]["creationTimestamp"], "%Y-%m-%dT%H:%M:%SZ")
                     init_time = datetime.strptime(initialization_time[v], "%Y-%m-%dT%H:%M:%S")
-                    difference = (creation_time - init_time)
+                    difference = (init_time - creation_time)
                     duration.append(difference.total_seconds())
         
         average_initialization_time = 0

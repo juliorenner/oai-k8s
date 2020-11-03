@@ -149,7 +149,7 @@ class SplitsPlacer:
             initialization_time[pod.metadata.name] = timestamp
             init_time = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
             creation_time = datetime.strptime(creation_timestamp, "%Y-%m-%dT%H:%M:%SZ")
-            difference = (creation_time - init_time)
+            difference = (init_time - creation_time)
             duration.append(difference.total_seconds())
 
         average_initialization_time = 0
