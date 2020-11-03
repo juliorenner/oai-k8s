@@ -3,6 +3,8 @@ import yaml
 import logging
 import time
 
+from datetime import datetime
+
 from kubernetes import config, client, utils
 from utils.k8s import K8S
 
