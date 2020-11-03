@@ -30,7 +30,7 @@ def TestSplitsPlacer(exec_number: int, topology_name: str):
             logging.info("outputing results")
             output_result(result, topology_name, n)
         finally:
-            time.sleep(50)
+            # time.sleep(50)
             logging.info("deleting splitsplacer")
             splitsplacer.delete()
             logging.info("waiting for clean up to finish")
@@ -52,7 +52,7 @@ def TestSplits(exec_number: int):
 
             output_result(result, template_file, n)
         finally:
-            time.sleep(50)
+            # time.sleep(50)
             logging.info("deleting splits")
             splits.delete()
             logging.info("waiting for clean up to finish")
@@ -73,6 +73,10 @@ def output_result(result: object, file_name: str, exec_number: int):
     if "links_bandwidth" in result:
         logs_file.write("links bandwidth: \n{}\n".format(
             result["links_bandwidth"]))
+
+    if "average_initialization_time" in result:
+        logs_file.write("average initialization time: {}\n".format(
+            result["average_initialization_time"]))
 
     if "creation_timestamp" in result:
         logs_file.write("creation timestamp: {}\n".format(

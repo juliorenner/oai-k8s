@@ -3,6 +3,7 @@ import os
 import yaml
 import time
 
+from datetime import datetime
 from utils.k8s import K8S
 import utils.constants as constants
 
@@ -138,6 +139,7 @@ class SplitsPlacer:
             time.sleep(5)
 
         initialization_time = {}
+        duration = []
         for pod in pods.items:
             logging.info(f"getting logs for pod {pod.metadata.name}")
             pod_logs = K8S.logs(pod.metadata.name).split("\n")
@@ -145,11 +147,21 @@ class SplitsPlacer:
             timestamp = pod_logs[0]
 
             initialization_time[pod.metadata.name] = timestamp
+            init_time = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
+            creation_time = datetime.strptime(creation_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+            difference = (creation_time - init_time)
+            duration.append(difference.total_seconds())
+
+        average_initialization_time = 0
+        for v in duration:
+            average_initialization_time += v
+        average_initialization_time = average_initialization_time/len(duration)
 
         return {
             "placement": splitsplacer["spec"]["rus"],
             "links_bandwidth": links_bandwidth,
             "creation_timestamp": creation_timestamp,
             "initialization_time": initialization_time,
-            "state": constants.STATUS_FINISHED
+            "state": constants.STATUS_FINISHED,
+            "average_initialization_time": average_initialization_time
         }

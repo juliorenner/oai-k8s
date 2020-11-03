@@ -130,13 +130,14 @@ class Splits:
         splits = self.get()
         placement = {}
         creation_timestamp = {}
+        duration = []
         for s in splits:
-            creation_timestamp[s["metadata"]["name"]
-                               ] = s["metadata"]["creationTimestamp"]
+            creation_timestamp[s["metadata"]["name"]] = s["metadata"]["creationTimestamp"]
             if "status" not in s:
                 n = s["metadata"]["name"]
                 logging.info(f"split {n} does not have status")
                 time.sleep(30)
+
             placement[s["metadata"]["name"]] = {
                 "cu": s["status"]["cuNode"],
                 "du": s["status"]["duNode"],
@@ -144,8 +145,23 @@ class Splits:
                 "status": s["status"]["state"]
             }
 
+            for v in initialization_time:
+                split_name = v.split("-")[1]
+                if s["metadata"]["name"] == split_name:
+                    creation_time = datetime.strptime(s["metadata"]["creationTimestamp"], "%Y-%m-%dT%H:%M:%SZ")
+                    init_time = datetime.strptime(initialization_time[v], "%Y-%m-%dT%H:%M:%S")
+                    difference = (creation_time - init_time)
+                    duration.append(difference.total_seconds())
+        
+        average_initialization_time = 0
+        for v in duration:
+            average_initialization_time += v
+        average_initialization_time = average_initialization_time/len(duration)
+
+
         return {
             "creation_timestamp": creation_timestamp,
             "initialization_time": initialization_time,
-            "placement": placement
+            "placement": placement,
+            "average_initialization_time": average_initialization_time
         }
