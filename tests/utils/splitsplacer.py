@@ -146,16 +146,15 @@ class SplitsPlacer:
 
             timestamp = pod_logs[0]
 
+            if "Starting replacer" in timestamp:
+                timestamp = timestamp.split("\"")[1]
+                timestamp = timestamp[:-1]
+
             initialization_time[pod.metadata.name] = timestamp
-            try:
-                init_time = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
-                creation_time = datetime.strptime(creation_timestamp, "%Y-%m-%dT%H:%M:%SZ")
-                difference = (init_time - creation_time)
-                duration.append(difference.total_seconds())
-            except Exception as err:
-                logging.info(f"error {err}. pod name {pod.metadata.name}:")
-                logging.info("sleeping...")
-                time.sleep(300)
+            init_time = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
+            creation_time = datetime.strptime(creation_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+            difference = (init_time - creation_time)
+            duration.append(difference.total_seconds())
 
         average_initialization_time = 0
         for v in duration:

@@ -127,6 +127,10 @@ class Splits:
 
             timestamp = pod_logs[0]
 
+            if "Starting replacer" in timestamp:
+                timestamp = timestamp.split("\"")[1]
+                timestamp = timestamp[:-1]
+
             initialization_time[pod.metadata.name] = timestamp
 
         splits = self.get()
