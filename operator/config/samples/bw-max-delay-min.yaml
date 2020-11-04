@@ -68,7 +68,7 @@ data:
         },
         "links": {
             "node6--node3": {
-                "linkCapacity": 300,
+                "linkCapacity": "600",
                 "linkDelay": 0.173825,
                 "source": {
                     "node": "node6",
@@ -80,7 +80,7 @@ data:
                 }
             },
             "node6--node4": {
-                "linkCapacity": 600,
+                "linkCapacity": "600",
                 "linkDelay": 0.173825,
                 "source": {
                     "node": "node6",
@@ -92,7 +92,7 @@ data:
                 }
             },
             "node7--node3": {
-                "linkCapacity": 450,
+                "linkCapacity": "600",
                 "linkDelay": 0.173825,
                 "source": {
                     "node": "node7",
@@ -104,7 +104,7 @@ data:
                 }
             },
             "node7--node5": {
-                "linkCapacity": 300,
+                "linkCapacity": "600",
                 "linkDelay": 0.173825,
                 "source": {
                     "node": "node7",
@@ -116,7 +116,7 @@ data:
                 }
             },
             "node8--node3": {
-                "linkCapacity": 600,
+                "linkCapacity": "600",
                 "linkDelay": 0.173825,
                 "source": {
                     "node": "node8",
@@ -128,7 +128,7 @@ data:
                 }
             },
             "node9--node8": {
-                "linkCapacity": 450,
+                "linkCapacity": "600",
                 "linkDelay": 0.16145,
                 "source": {
                     "node": "node9",
@@ -140,7 +140,7 @@ data:
                 }
             },
             "node10--node9": {
-                "linkCapacity": 300,
+                "linkCapacity": "600",
                 "linkDelay": 0.16145,
                 "source": {
                     "node": "node10",
@@ -152,7 +152,7 @@ data:
                 }
             },
             "node10--node4": {
-                "linkCapacity": 600,
+                "linkCapacity": "600",
                 "linkDelay": 0.173825,
                 "source": {
                     "node": "node10",
@@ -164,7 +164,7 @@ data:
                 }
             },
             "node11--node4": {
-                "linkCapacity": 450,
+                "linkCapacity": "600",
                 "linkDelay": 0.173825,
                 "source": {
                     "node": "node11",
@@ -176,7 +176,7 @@ data:
                 }
             },
             "node11--node5": {
-                "linkCapacity": 300,
+                "linkCapacity": "600",
                 "linkDelay": 0.173825,
                 "source": {
                     "node": "node11",
@@ -188,7 +188,7 @@ data:
                 }
             },
             "node12--node11": {
-                "linkCapacity": 600,
+                "linkCapacity": "600",
                 "linkDelay": 0.16145,
                 "source": {
                     "node": "node12",
@@ -200,7 +200,7 @@ data:
                 }
             },
             "node13--node12": {
-                "linkCapacity": 450,
+                "linkCapacity": "600",
                 "linkDelay": 0.16145,
                 "source": {
                     "node": "node13",
@@ -212,7 +212,7 @@ data:
                 }
             },
             "node3--node14": {
-                "linkCapacity": 1500,
+                "linkCapacity": "1500",
                 "linkDelay": 0.219875,
                 "source": {
                     "node": "node3",
@@ -224,7 +224,7 @@ data:
                 }
             },
             "node3--node15": {
-                "linkCapacity": 1200,
+                "linkCapacity": "1500",
                 "linkDelay": 0.219875,
                 "source": {
                     "node": "node3",
@@ -236,7 +236,7 @@ data:
                 }
             },
             "node4--node14": {
-                "linkCapacity": 1500,
+                "linkCapacity": "1500",
                 "linkDelay": 0.219875,
                 "source": {
                     "node": "node4",
@@ -248,7 +248,7 @@ data:
                 }
             },
             "node4--node15": {
-                "linkCapacity": 1500,
+                "linkCapacity": "1500",
                 "linkDelay": 0.219875,
                 "source": {
                     "node": "node4",
@@ -260,7 +260,7 @@ data:
                 }
             },
             "node5--node14": {
-                "linkCapacity": 1200,
+                "linkCapacity": "1500",
                 "linkDelay": 0.219875,
                 "source": {
                     "node": "node5",
@@ -272,7 +272,7 @@ data:
                 }
             },
             "node5--node15": {
-                "linkCapacity": 1500,
+                "linkCapacity": "1500",
                 "linkDelay": 0.219875,
                 "source": {
                     "node": "node5",
@@ -284,7 +284,7 @@ data:
                 }
             },
             "node14--node16": {
-                "linkCapacity": 1500,
+                "linkCapacity": "1500",
                 "linkDelay": 2,
                 "source": {
                     "node": "node14",
@@ -296,7 +296,7 @@ data:
                 }
             },
             "node15--node16": {
-                "linkCapacity": 1200,
+                "linkCapacity": "1500",
                 "linkDelay": 2,
                 "source": {
                     "node": "node15",
