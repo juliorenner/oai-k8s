@@ -30,7 +30,7 @@ def TestSplitsPlacer(exec_number: int, topology_name: str):
             logging.info("outputing results")
             output_result(result, topology_name, n)
         finally:
-            # time.sleep(60)
+            time.sleep(60)
             logging.info("deleting splitsplacer")
             splitsplacer.delete()
             logging.info("waiting for clean up to finish")
@@ -52,7 +52,7 @@ def TestSplits(exec_number: int):
 
             output_result(result, template_file, n)
         finally:
-            # time.sleep(60)
+            time.sleep(60)
             logging.info("deleting splits")
             splits.delete()
             logging.info("waiting for clean up to finish")
@@ -119,11 +119,11 @@ def main():
 
     output_start_end_times()
 
-    # TestSplits(args.number_of_executions)
+    TestSplits(args.number_of_executions)
 
     TestSplitsPlacer(args.number_of_executions, "bw-max-delay-min.yaml")
-    # TestSplitsPlacer(args.number_of_executions, "bw-min-link-delay.yaml")
-    # TestSplitsPlacer(args.number_of_executions, "bw-random-link-delay.yaml")
+    TestSplitsPlacer(args.number_of_executions, "bw-min-link-delay.yaml")
+    TestSplitsPlacer(args.number_of_executions, "bw-random-link-delay.yaml")
 
     output_start_end_times()
 
