@@ -176,6 +176,9 @@ func (r *SplitsPlacerReconciler) validateTopologyNodes(topology *oaiv1beta1.Topo
 
 func (r *SplitsPlacerReconciler) syncSplits(splitsPlacer *oaiv1beta1.SplitsPlacer, log logr.Logger) error {
 	for _, ru := range splitsPlacer.Spec.RUs {
+		if ru.CUNode == "" || ru.DUNode == "" {
+			continue
+		}
 		// Check if split exists
 		splitKey := r.getObjectKey(ru.SplitName, splitsPlacer.Namespace)
 
@@ -284,6 +287,15 @@ func (r *SplitsPlacerReconciler) place(splitsPlacer *oaiv1beta1.SplitsPlacer, to
 	topologyGraph := algorithm.NewPlacementBFS(topology, disaggregations, nodeList, requestedResources, log)
 
 	success, err := topologyGraph.Place(splitsPlacer.Spec.RUs)
+
+	var notAllocatedRUs []*oaiv1beta1.RUPosition
+	for _, ru := range splitsPlacer.Spec.RUs {
+		if ru.DUNode == "" || ru.CUNode == "" {
+			notAllocatedRUs = append(notAllocatedRUs, ru)
+		}
+	}
+
+	splitsPlacer.Status.AllocatedRUs = len(splitsPlacer.Spec.RUs) - len(notAllocatedRUs)
 
 	for k, v := range topologyGraph.GetRemainingBandwidth() {
 		if splitsPlacer.Status.RemainingBandwidth == nil {

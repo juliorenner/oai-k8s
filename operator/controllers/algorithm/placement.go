@@ -103,7 +103,7 @@ func (p *PlacementBFS) Place(rus []*oaiv1beta1.RUPosition) (bool, error) {
 		} else {
 			p.log.Error(errors.New("disaggregation allocation not possible"),
 				"not possible to allocate using disaggregation 8", "ru", ru.SplitName)
-			return false, nil
+			//return false, nil
 		}
 	}
 

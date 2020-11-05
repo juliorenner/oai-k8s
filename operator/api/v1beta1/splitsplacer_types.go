@@ -76,6 +76,7 @@ type RUPosition struct {
 type SplitsPlacerStatus struct {
 	State              SplitsPlacerState `json:"state,omitempty"`
 	RemainingBandwidth map[string]string `json:"remainingBandwidth,omitempty"`
+	AllocatedRUs       int               `json:"allocatedRUs,omitempty"`
 }
 
 // +kubebuilder:object:root=true

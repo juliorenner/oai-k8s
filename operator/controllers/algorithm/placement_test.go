@@ -60,7 +60,7 @@ func TestPlacementAlgorithm(t *testing.T) {
 		numberOfAllocatedRUs int
 	}{
 		{
-			"no enough link", generateRUs("node6", "node6", "node6"), false, false, 2,
+			"no enough link", generateRUs("node6", "node6", "node6"), true, false, 2,
 		},
 		{
 			"enough resources", generateRUs("node6", "node6"), true, false, 2,
@@ -69,7 +69,7 @@ func TestPlacementAlgorithm(t *testing.T) {
 			"enough resources: node13", generateRUs("node13"), true, false, 1,
 		},
 		{
-			"not enough resources: node13", generateRUs("node13", "node13"), false, false, 1,
+			"not enough resources: node13", generateRUs("node13", "node13"), true, false, 1,
 		},
 	}
 
