@@ -66,7 +66,7 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	if splitsPlacer.Status.State == oaiv1beta1.PlacerStateFinished && !splitsPlacer.Spec.Retrigger {
+	if splitsPlacer.Status.State != "" {
 		//if splitsPlacer.Status.State == oaiv1beta1.PlacerStateFinished {
 		//log.Info("Skipping reconcile. Status Finished and retrigger not enabled.", logSplitKey, splitsPlacer.Name)
 		log.Info("Skipping reconcile, it already executed...")
