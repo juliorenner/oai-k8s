@@ -120,6 +120,15 @@ class SplitsPlacer:
 
         links_bandwidth = splitsplacer["status"]["remainingBandwidth"]
         creation_timestamp = splitsplacer["metadata"]["creationTimestamp"]
+        
+        hops_count = {}
+        # paths_sum = []
+        for ru in splitsplacer["spec"]["rus"]:
+            hops = len(ru["path"])-1
+            hops_count[ru["splitName"]] = hops
+            # paths_sum.append(hops)
+
+        average_hops = sum(hops_count.items())/len(hops_count)
 
         while True:
             pods = K8S.list_pods()
@@ -167,5 +176,7 @@ class SplitsPlacer:
             "creation_timestamp": creation_timestamp,
             "initialization_time": initialization_time,
             "state": constants.STATUS_FINISHED,
-            "average_initialization_time": average_initialization_time
+            "average_initialization_time": average_initialization_time,
+            "average_hops": average_hops,
+            "hops_count": hops_count,
         }

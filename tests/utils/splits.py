@@ -7,6 +7,7 @@ from datetime import datetime
 
 from kubernetes import config, client, utils
 from utils.k8s import K8S
+from utils.bfs import count_hops
 
 from kubernetes.client.rest import ApiException
 
@@ -99,7 +100,7 @@ class Splits:
                     logging.error(
                         f"[SPLITS] Error deleting split: {err}")
 
-    def collect_result(self):
+    def wait_pods_to_be_running(self):
         splits = self.get()
 
         while True:
@@ -119,6 +120,7 @@ class Splits:
                 break
             time.sleep(5)
 
+    def get_initialization_time(self):
         initialization_time = {}
 
         for pod in pods.items:
@@ -132,6 +134,13 @@ class Splits:
                 timestamp = timestamp[:-1]
 
             initialization_time[pod.metadata.name] = timestamp
+
+        return initialization_time
+
+    def collect_result(self):
+        self.wait_pods_to_be_running()
+
+        initialization_time = self.get_initialization_time()
 
         splits = self.get()
         placement = {}
@@ -164,10 +173,14 @@ class Splits:
             average_initialization_time += v
         average_initialization_time = average_initialization_time/len(duration)
 
+        hops_count = count_hops(placement)
+        average_hops = sum(hops_count)/len(hops_count)
 
         return {
             "creation_timestamp": creation_timestamp,
             "initialization_time": initialization_time,
             "placement": placement,
-            "average_initialization_time": average_initialization_time
+            "hops_count": hops_count,
+            "average_hops": average_hops,
+            "average_initialization_time": average_initialization_time,
         }
