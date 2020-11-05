@@ -124,6 +124,8 @@ class SplitsPlacer:
         hops_count = {}
         # paths_sum = []
         for ru in splitsplacer["spec"]["rus"]:
+            if len(ru["path"]) == 0:
+                continue
             hops = len(ru["path"])-1
             hops_count[ru["splitName"]] = hops
             # paths_sum.append(hops)
