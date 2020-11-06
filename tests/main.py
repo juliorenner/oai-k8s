@@ -101,8 +101,6 @@ def output_result(result: object, file_name: str, exec_number: int):
     if "placement" in result:
         logs_file.write("placement: {}\n".format(
             result["placement"]))
-    
-    if ""
 
     logs_file.close()
 
