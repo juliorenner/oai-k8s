@@ -122,20 +122,18 @@ class SplitsPlacer:
         creation_timestamp = splitsplacer["metadata"]["creationTimestamp"]
         
         hops_count = {}
-        # paths_sum = []
         for ru in splitsplacer["spec"]["rus"]:
             if "path" not in ru or len(ru["path"]) == 0:
                 continue
             hops = len(ru["path"])-1
             hops_count[ru["splitName"]] = hops
-            # paths_sum.append(hops)
 
         average_hops = sum(hops_count.values())/len(hops_count)
 
         while True:
             pods = K8S.list_pods()
             ready = True
-            if len(pods.items) < len(splitsplacer["spec"]["rus"]) * 3:
+            if len(pods.items) < len(splitsplacer["status"]["allocatedRUs"]) * 3:
                 ready = False
             else:
                 for pod in pods.items:
@@ -146,7 +144,7 @@ class SplitsPlacer:
             if ready:
                 logging.info("all pods running")
                 break
-            
+            logging.info("waiting pods to be ready")            
             time.sleep(5)
 
         initialization_time = {}
