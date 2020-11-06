@@ -14,7 +14,7 @@ from utils.splits import Splits
 logging.basicConfig(level=logging.INFO)
 
 
-def TestSplitsPlacer(exec_number: int, topology_name: str):
+def TestSplitsPlacer(exec_number: int, topology_name: str, resources_validation: bool):
 
     for n in range(exec_number):
         splitsplacer = SplitsPlacer(topology_name)
@@ -30,14 +30,14 @@ def TestSplitsPlacer(exec_number: int, topology_name: str):
             logging.info("outputing results")
             output_result(result, topology_name, n)
         finally:
-            time.sleep(60)
+            resources_validation and time.sleep(60)
             logging.info("deleting splitsplacer")
             splitsplacer.delete()
             logging.info("waiting for clean up to finish")
             wait_cleanup_finished()
 
 
-def TestSplits(exec_number: int):
+def TestSplits(exec_number: int, resources_validation: bool):
 
     template_file = "scheduler.yaml"
     for n in range(exec_number):
@@ -52,7 +52,7 @@ def TestSplits(exec_number: int):
 
             output_result(result, template_file, n)
         finally:
-            time.sleep(60)
+            resources_validation and time.sleep(60)
             logging.info("deleting splits")
             splits.delete()
             logging.info("waiting for clean up to finish")
@@ -114,16 +114,17 @@ def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--number-of-executions', type=int, default=30)
+    parser.add_argument('--resources-validation', type=bool, default=False)
 
     args = parser.parse_args()
 
     output_start_end_times()
 
-    TestSplits(args.number_of_executions)
+    TestSplits(args.number_of_executions, args.resources_validation)
 
-    TestSplitsPlacer(args.number_of_executions, "bw-max-delay-min.yaml")
-    TestSplitsPlacer(args.number_of_executions, "bw-min-link-delay.yaml")
-    TestSplitsPlacer(args.number_of_executions, "bw-random-link-delay.yaml")
+    TestSplitsPlacer(args.number_of_executions, "bw-max-delay-min.yaml", args.resources_validation)
+    TestSplitsPlacer(args.number_of_executions, "bw-min-link-delay.yaml", args.resources_validation)
+    TestSplitsPlacer(args.number_of_executions, "bw-random-link-delay.yaml", args.resources_validation)
 
     output_start_end_times()
 
