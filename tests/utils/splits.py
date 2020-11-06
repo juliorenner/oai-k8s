@@ -146,7 +146,6 @@ class Splits:
         return initialization_time
 
     def collect_result(self):
-        time.sleep(300)
         self.wait_pods_to_be_running()
 
         initialization_time = self.get_initialization_time()
