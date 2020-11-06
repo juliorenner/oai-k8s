@@ -122,7 +122,7 @@ class Splits:
 
     def get_initialization_time(self):
         initialization_time = {}
-
+        pods = K8S.list_pods()
         for pod in pods.items:
             logging.info(f"getting logs for pod {pod.metadata.name}")
             pod_logs = K8S.logs(pod.metadata.name).split("\n")
