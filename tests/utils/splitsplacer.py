@@ -133,7 +133,7 @@ class SplitsPlacer:
         while True:
             pods = K8S.list_pods()
             ready = True
-            if len(pods.items) < len(splitsplacer["status"]["allocatedRUs"]) * 3:
+            if len(pods.items) < splitsplacer["status"]["allocatedRUs"] * 3:
                 ready = False
             else:
                 for pod in pods.items:
