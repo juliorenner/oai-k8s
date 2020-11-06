@@ -179,4 +179,5 @@ class SplitsPlacer:
             "average_initialization_time": average_initialization_time,
             "average_hops": average_hops,
             "hops_count": hops_count,
+            "allocation_time": splitsplacer["status"]["allocationTime"]
         }

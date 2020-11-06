@@ -78,6 +78,18 @@ def output_result(result: object, file_name: str, exec_number: int):
         logs_file.write("average initialization time: {}\n".format(
             result["average_initialization_time"]))
 
+    if "average_hops" in result:
+        logs_file.write("average_hops: {}\n".format(
+            result["average_hops"]))
+
+    if "hops_count" in result:
+        logs_file.write("hops_count: {}\n".format(
+            result["hops_count"]))
+
+    if "allocation_time" in result:
+        logs_file.write("splits placer allocation_time: {}\n".format(
+            result["allocation_time"]))
+
     if "creation_timestamp" in result:
         logs_file.write("creation timestamp: {}\n".format(
             result["creation_timestamp"]))
@@ -89,6 +101,8 @@ def output_result(result: object, file_name: str, exec_number: int):
     if "placement" in result:
         logs_file.write("placement: {}\n".format(
             result["placement"]))
+    
+    if ""
 
     logs_file.close()
 
