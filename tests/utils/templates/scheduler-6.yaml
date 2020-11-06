@@ -46,19 +46,3 @@ metadata:
 spec:
   coreIP: 10.233.105.56
   ruNode: node11
----
-apiVersion: oai.unisinos/v1beta1
-kind: Split
-metadata:
-  name: "7"
-spec:
-  coreIP: 10.233.105.56
-  ruNode: node12
----
-apiVersion: oai.unisinos/v1beta1
-kind: Split
-metadata:
-  name: "8"
-spec:
-  coreIP: 10.233.105.56
-  ruNode: node13

@@ -5,7 +5,7 @@ metadata:
   namespace: oai
 spec:
   coreIP: 10.233.105.76
-  topologyConfig: "bw-max-delay-min"
+  topologyConfig: "bw-min-link-delay"
   rus:
   - splitName: "1"
     ruNode: "node6"
@@ -23,3 +23,5 @@ spec:
     ruNode: "node12"
   - splitName: "8"
     ruNode: "node13"
+  - splitName: "9"
+    ruNode: "node6"
