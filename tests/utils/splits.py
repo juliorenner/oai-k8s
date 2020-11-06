@@ -113,8 +113,6 @@ class Splits:
                     if ("status" not in s or ("cuNode" not in s["status"]) or
                         ("duNode" not in s["status"]) or ("ruNode" not in s["status"]) or
                         s["status"]["cuNode"] == "" or s["status"]["duNode"] == "" or s["status"]["ruNode"] == ""):
-                        logging.info("not ready: ")
-                        logging.info(s)
                         ready = False
                 if ready:
                     for pod in pods.items:
