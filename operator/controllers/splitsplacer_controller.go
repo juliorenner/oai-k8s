@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/go-logr/logr"
 	oaiv1beta1 "github.com/juliorenner/oai-k8s/operator/api/v1beta1"
@@ -55,6 +56,7 @@ type SplitsPlacerReconciler struct {
 // +kubebuilder:rbac:groups="",resources=nodes,verbs=get;list;watch
 
 func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+	initialTime := time.Now()
 	ctx := context.Background()
 	log := r.Log.WithValues("splitsplacer", req.NamespacedName)
 
@@ -88,6 +90,8 @@ func (r *SplitsPlacerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 		}
 		return ctrl.Result{}, fmt.Errorf("error syncing splits: %w", err)
 	}
+
+	splitsPlacer.Status.AllocationTime = fmt.Sprintf("%f", time.Since(initialTime).Seconds())
 
 	r.Recorder.Event(splitsPlacer, v1.EventTypeNormal, "Sync", "Synced successfully")
 

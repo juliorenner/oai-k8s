@@ -84,6 +84,8 @@ spec:
           properties:
             allocatedRUs:
               type: integer
+            allocationTime:
+              type: string
             remainingBandwidth:
               additionalProperties:
                 type: string
