@@ -130,7 +130,7 @@ class SplitsPlacer:
             hops_count[ru["splitName"]] = hops
             # paths_sum.append(hops)
 
-        average_hops = sum(hops_count.items())/len(hops_count)
+        average_hops = sum(hops_count.values())/len(hops_count)
 
         while True:
             pods = K8S.list_pods()

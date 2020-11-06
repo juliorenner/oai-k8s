@@ -185,10 +185,7 @@ class Splits:
         average_initialization_time = average_initialization_time/len(duration)
 
         hops_count = count_hops(placement)
-        logging.info(f"hops count {hops_count}")
-        logging.info(f"sum count {sum(hops_count)}")
-        logging.info(f"len count {len(hops_count)}")
-        average_hops = sum(hops_count)/len(hops_count)
+        average_hops = sum(hops_count.values())/len(hops_count)
 
         return {
             "creation_timestamp": creation_timestamp,
