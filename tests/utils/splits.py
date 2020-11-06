@@ -109,12 +109,18 @@ class Splits:
             if len(pods.items) < len(splits) * 3:
                 ready = False
             else:
-                for pod in pods.items:
-                    if pod.status.phase != "Running":
-                        logging.info(
-                            f"pod {pod.metadata.name} in state {pod.status.phase}")
+                for s in splits:
+                    if ("status" not in s or ("cuNode" not in s["status"]) or
+                        ("duNode" not in s["status"]) or ("ruNode" not in s["status"]) or
+                        s["status"]["cuNode"] == "" or s["status"]["duNode"] == "" or s["status"]["ruNode"] == ""):
                         ready = False
-                        break
+                if ready:
+                    for pod in pods.items:
+                        if pod.status.phase != "Running":
+                            logging.info(
+                                f"pod {pod.metadata.name} in state {pod.status.phase}")
+                            ready = False
+                            break
             if ready:
                 logging.info("all pods running")
                 break
@@ -148,7 +154,8 @@ class Splits:
         creation_timestamp = {}
         duration = []
         for s in splits:
-            creation_timestamp[s["metadata"]["name"]] = s["metadata"]["creationTimestamp"]
+            creation_timestamp[s["metadata"]["name"]
+                               ] = s["metadata"]["creationTimestamp"]
             if "status" not in s:
                 n = s["metadata"]["name"]
                 logging.info(f"split {n} does not have status")
@@ -164,11 +171,13 @@ class Splits:
             for v in initialization_time:
                 split_name = v.split("-")[1]
                 if s["metadata"]["name"] == split_name:
-                    creation_time = datetime.strptime(s["metadata"]["creationTimestamp"], "%Y-%m-%dT%H:%M:%SZ")
-                    init_time = datetime.strptime(initialization_time[v], "%Y-%m-%dT%H:%M:%S")
+                    creation_time = datetime.strptime(
+                        s["metadata"]["creationTimestamp"], "%Y-%m-%dT%H:%M:%SZ")
+                    init_time = datetime.strptime(
+                        initialization_time[v], "%Y-%m-%dT%H:%M:%S")
                     difference = (init_time - creation_time)
                     duration.append(difference.total_seconds())
-        
+
         average_initialization_time = 0
         for v in duration:
             average_initialization_time += v
