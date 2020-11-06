@@ -189,7 +189,7 @@ class Splits:
             "creation_timestamp": creation_timestamp,
             "initialization_time": initialization_time,
             "placement": placement,
-            "hops_count": hops_count,
+            "hops_count": sum(hops_count.values()),
             "average_hops": average_hops,
             "average_initialization_time": average_initialization_time,
         }

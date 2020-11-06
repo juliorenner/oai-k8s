@@ -178,6 +178,6 @@ class SplitsPlacer:
             "state": constants.STATUS_FINISHED,
             "average_initialization_time": average_initialization_time,
             "average_hops": average_hops,
-            "hops_count": hops_count,
+            "hops_count": sum(hops_count.values()),
             "allocation_time": splitsplacer["status"]["allocationTime"]
         }
