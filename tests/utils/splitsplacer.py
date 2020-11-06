@@ -124,7 +124,7 @@ class SplitsPlacer:
         hops_count = {}
         # paths_sum = []
         for ru in splitsplacer["spec"]["rus"]:
-            if len(ru["path"]) == 0:
+            if "path" not in ru or len(ru["path"]) == 0:
                 continue
             hops = len(ru["path"])-1
             hops_count[ru["splitName"]] = hops
