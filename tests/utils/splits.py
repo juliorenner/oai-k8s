@@ -101,9 +101,9 @@ class Splits:
                         f"[SPLITS] Error deleting split: {err}")
 
     def wait_pods_to_be_running(self):
-        splits = self.get()
-
+        time.sleep(5)
         while True:
+            splits = self.get()
             pods = K8S.list_pods()
             ready = True
             if len(pods.items) < len(splits) * 3:
