@@ -28,14 +28,19 @@ class K8S:
         return client.CoreV1Api(K8S.get_client())
 
     @staticmethod
+    @retry(stop=stop_after_delay(60), retry=retry_if_exception_type(TryAgain),
+           wait=wait_fixed(5), reraise=True)
     def list_pods():
         v1_client = K8S.get_core_v1_client()
         try:
             return v1_client.list_namespaced_pod(constants.NAMESPACE_OAI)
         except ApiException as err:
             logging.error(f"[K8S] Error listing pods: {err}")
+            raise TryAgain
 
     @staticmethod
+    @retry(stop=stop_after_delay(60), retry=retry_if_exception_type(TryAgain),
+           wait=wait_fixed(5), reraise=True)
     def logs(pod_name: str):
         """
             Gets the logs of the desired pod.
@@ -46,4 +51,4 @@ class K8S:
                                                       namespace=constants.NAMESPACE_OAI)
         except ApiException as err:
             logging.error(f"[K8S] Error getting pod logs: {err}")
-            raise
+            raise TryAgain
