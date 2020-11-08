@@ -121,7 +121,7 @@ def output_result(result: object, file_name: str, exec_number: int):
     logs_file.close()
 
 
-def output_csv(result: object, file_name: str, splitsPlacer: bool = False):
+def output_csv(result: object, file_name: str, splitsPlacer: bool = False, exec_number: int):
     output_filename = file_name.split(".")[0]
     output_file = "{}/results/{}.csv".format(os.getcwd(),
                                              output_filename)
@@ -129,6 +129,7 @@ def output_csv(result: object, file_name: str, splitsPlacer: bool = False):
         csv_writer = csv.writer(csv_file, delimiter=';',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         output_line = []
+        output_line.append(exec_number)
         if splitsPlacer:
             output_line.append(result["state"])
         
