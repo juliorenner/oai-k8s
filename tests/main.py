@@ -2,6 +2,7 @@ import argparse
 import time
 import os
 import logging
+import csv
 
 from datetime import datetime
 
@@ -27,6 +28,10 @@ def TestSplitsPlacer(exec_number: int, topology_name: str, resources_validation:
 
             logging.info("collecting results")
             result = splitsplacer.collect_result()
+
+            logging.info("outputing csv")
+            output_csv(result, template_file, True)
+
             logging.info("outputing results")
             output_result(result, topology_name, n)
         finally:
@@ -49,6 +54,10 @@ def TestSplits(exec_number: int, template_file: str, resources_validation: bool)
             logging.info("collecting results")
             result = splits.collect_result()
 
+            logging.info("outputing csv")
+            output_csv(result, template_file, False)
+
+            logging.info("outputing results")
             output_result(result, template_file, n)
         finally:
             resources_validation and time.sleep(60)
@@ -84,7 +93,7 @@ def output_result(result: object, file_name: str, exec_number: int):
     if "hops_count" in result:
         logs_file.write("hops_count: {}\n".format(
             result["hops_count"]))
-    
+
     if "allocated_rus" in result:
         logs_file.write("allocated rus: {}\n".format(
             result["allocated_rus"]))
@@ -110,6 +119,25 @@ def output_result(result: object, file_name: str, exec_number: int):
             result["placement"]))
 
     logs_file.close()
+
+
+def output_csv(result: obj, file_name: str, splitsPlacer: bool = False):
+    output_filename = file_name.split(".")[0]
+    output_file = "{}/results/{}.txt".format(os.getcwd(),
+                                             output_filename)
+    with open(output_file) as csv_file:
+        csv_writer = csv.writer(csvfile, delimiter=' ',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        output_line = []
+        output_line.append(result["state"])
+        output_line.append(result["average_initialization_time"])
+        output_line.append(result["average_hops"])
+        output_line.append(result["hops_count"])
+        if splitsPlacer:
+            output_line.append(result["allocated_rus"])
+            output_line.append(result["allocated_percentage"])
+            output_line.append(result["allocation_time"])
+        csv_writer.writerow(output_line)
 
 
 def wait_cleanup_finished():
