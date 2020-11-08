@@ -129,11 +129,11 @@ def output_csv(result: object, file_name: str, splitsPlacer: bool = False):
         csv_writer = csv.writer(csv_file, delimiter=' ',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         output_line = []
-        output_line.append(result["state"])
         output_line.append(result["average_initialization_time"])
         output_line.append(result["average_hops"])
         output_line.append(result["hops_count"])
         if splitsPlacer:
+            output_line.append(result["state"])
             output_line.append(result["allocated_rus"])
             output_line.append(result["allocated_percentage"])
             output_line.append(result["allocation_time"])
