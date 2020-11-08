@@ -123,7 +123,7 @@ def output_result(result: object, file_name: str, exec_number: int):
 
 def output_csv(result: object, file_name: str, splitsPlacer: bool = False):
     output_filename = file_name.split(".")[0]
-    output_file = "{}/results/{}.txt".format(os.getcwd(),
+    output_file = "{}/results/{}.csv".format(os.getcwd(),
                                              output_filename)
     with open(output_file, "a") as csv_file:
         csv_writer = csv.writer(csv_file, delimiter=' ',
