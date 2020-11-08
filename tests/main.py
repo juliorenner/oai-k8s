@@ -126,7 +126,7 @@ def output_csv(result: object, file_name: str, splitsPlacer: bool = False):
     output_file = "{}/results/{}.csv".format(os.getcwd(),
                                              output_filename)
     with open(output_file, "a") as csv_file:
-        csv_writer = csv.writer(csv_file, delimiter=' ',
+        csv_writer = csv.writer(csv_file, delimiter=';',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         output_line = []
         output_line.append(result["average_initialization_time"])
