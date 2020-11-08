@@ -179,5 +179,7 @@ class SplitsPlacer:
             "average_initialization_time": average_initialization_time,
             "average_hops": average_hops,
             "hops_count": sum(hops_count.values()),
-            "allocation_time": splitsplacer["status"]["allocationTime"]
+            "allocation_time": splitsplacer["status"]["allocationTime"],
+            "allocated_rus": splitsplacer["status"]["allocatedRUs"],
+            "allocated_percentage": (splitsplacer["status"]["allocatedRUs"]/len(splitsplacer["spec"]["rus"]))*100
         }

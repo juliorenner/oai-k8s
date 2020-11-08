@@ -84,6 +84,14 @@ def output_result(result: object, file_name: str, exec_number: int):
     if "hops_count" in result:
         logs_file.write("hops_count: {}\n".format(
             result["hops_count"]))
+    
+    if "allocated_rus" in result:
+        logs_file.write("allocated rus: {}\n".format(
+            result["allocated_rus"]))
+
+    if "allocated_percentage" in result:
+        logs_file.write("allocated rus percentage: {}\n".format(
+            result["allocated_percentage"]))
 
     if "allocation_time" in result:
         logs_file.write("splits placer allocation_time: {}\n".format(
