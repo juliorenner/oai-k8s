@@ -121,7 +121,7 @@ def output_result(result: object, file_name: str, exec_number: int):
     logs_file.close()
 
 
-def output_csv(result: obj, file_name: str, splitsPlacer: bool = False):
+def output_csv(result: object, file_name: str, splitsPlacer: bool = False):
     output_filename = file_name.split(".")[0]
     output_file = "{}/results/{}.txt".format(os.getcwd(),
                                              output_filename)
