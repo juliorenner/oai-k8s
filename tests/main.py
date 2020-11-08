@@ -30,7 +30,7 @@ def TestSplitsPlacer(exec_number: int, topology_name: str, resources_validation:
             result = splitsplacer.collect_result()
 
             logging.info("outputing csv")
-            output_csv(result, template_file, True)
+            output_csv(result, topology_name, True)
 
             logging.info("outputing results")
             output_result(result, topology_name, n)
