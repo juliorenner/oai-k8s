@@ -30,7 +30,7 @@ def TestSplitsPlacer(exec_number: int, topology_name: str, resources_validation:
             result = splitsplacer.collect_result()
 
             logging.info("outputing csv")
-            output_csv(result, topology_name, True)
+            output_csv(result, topology_name, True, n)
 
             logging.info("outputing results")
             output_result(result, topology_name, n)
@@ -55,7 +55,7 @@ def TestSplits(exec_number: int, template_file: str, resources_validation: bool)
             result = splits.collect_result()
 
             logging.info("outputing csv")
-            output_csv(result, template_file, False)
+            output_csv(result, template_file, False, n)
 
             logging.info("outputing results")
             output_result(result, template_file, n)
@@ -121,7 +121,7 @@ def output_result(result: object, file_name: str, exec_number: int):
     logs_file.close()
 
 
-def output_csv(result: object, file_name: str, splitsPlacer: bool = False, exec_number: int):
+def output_csv(result: object, file_name: str, splitsPlacer: bool, exec_number: int):
     output_filename = file_name.split(".")[0]
     output_file = "{}/results/{}.csv".format(os.getcwd(),
                                              output_filename)
