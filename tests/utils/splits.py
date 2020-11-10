@@ -10,6 +10,7 @@ from utils.k8s import K8S
 from utils.bfs import count_hops
 
 from kubernetes.client.rest import ApiException
+from tenacity import retry, stop_after_delay, retry_if_exception_type, TryAgain, wait_fixed
 
 import utils.constants as constants
 
@@ -31,6 +32,8 @@ class Splits:
         except StopIteration:
             return
 
+    @retry(stop=stop_after_delay(120), retry=retry_if_exception_type(TryAgain),
+           wait=wait_fixed(5), reraise=True)
     def create(self):
         """
             Creates the Splits resource from yaml file.
@@ -51,13 +54,15 @@ class Splits:
                 if err.status != 409:
                     logging.error(
                         f"[SPLITS] Error creating Splits: {err}")
-                    raise
+                    raise TryAgain
 
         if len(created_crds) > 0:
             self.splits = created_crds
 
         return created_crds
 
+    @retry(stop=stop_after_delay(120), retry=retry_if_exception_type(TryAgain),
+           wait=wait_fixed(5), reraise=True)
     def get(self):
         """
             Gets all the splits created.
@@ -71,13 +76,15 @@ class Splits:
                                                            plural=constants.CRD_KIND_SPLITS)
         except ApiException as err:
             logging.error(f"[SPLITS] Error listing splits: {err}")
-            raise
+            raise TryAgain
 
         if splits["items"] is not None:
             self.splits = splits["items"]
 
         return splits["items"]
 
+    @retry(stop=stop_after_delay(120), retry=retry_if_exception_type(TryAgain),
+           wait=wait_fixed(5), reraise=True)
     def delete(self):
         """
             Deletes all the splits.
@@ -99,6 +106,7 @@ class Splits:
                 if err.status != 404:
                     logging.error(
                         f"[SPLITS] Error deleting split: {err}")
+                    raise TryAgain
 
     def wait_pods_to_be_running(self):
         time.sleep(5)
@@ -112,7 +120,7 @@ class Splits:
                 for s in splits:
                     if ("status" not in s or ("cuNode" not in s["status"]) or
                         ("duNode" not in s["status"]) or ("ruNode" not in s["status"]) or
-                        s["status"]["cuNode"] == "" or s["status"]["duNode"] == "" or s["status"]["ruNode"] == ""):
+                            s["status"]["cuNode"] == "" or s["status"]["duNode"] == "" or s["status"]["ruNode"] == ""):
                         ready = False
                 if ready:
                     for pod in pods.items:

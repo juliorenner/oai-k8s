@@ -24,6 +24,8 @@ class SplitsPlacer:
         self.splitsplacer = next(yaml.safe_load_all(
             open(self.template_file, "r").read()))
 
+    @retry(stop=stop_after_delay(120), retry=retry_if_exception_type(TryAgain),
+           wait=wait_fixed(5), reraise=True)
     def create(self):
         """
             Creates the SplitsPlacer resource.
@@ -41,8 +43,10 @@ class SplitsPlacer:
             if err.status != 409:
                 logging.error(
                     f"[SPLITSPLACER] Error creating SplitsPlacer: {err}")
-                raise
+                raise TryAgain
 
+    @retry(stop=stop_after_delay(120), retry=retry_if_exception_type(TryAgain),
+           wait=wait_fixed(5), reraise=True)
     def get(self):
         """
             Get SplitsPlacer.
@@ -61,7 +65,7 @@ class SplitsPlacer:
             if err.status != 404:
                 logging.error(
                     f"[SPLITSPLACER] Error getting splitsplacer: {err}")
-                raise
+                raise TryAgain
 
         if splitsplacer is not None:
             self.splitsplacer = splitsplacer
@@ -87,6 +91,8 @@ class SplitsPlacer:
                 f"[SPLITSPLACER] Unexpected error waiting for splitsplacer to be finished")
             raise
 
+    @retry(stop=stop_after_delay(120), retry=retry_if_exception_type(TryAgain),
+           wait=wait_fixed(5), reraise=True)
     def delete(self):
         """
             Deletes the SplitsPlacer.
@@ -108,7 +114,7 @@ class SplitsPlacer:
             if err.status != 404:
                 logging.error(
                     f"[SPLITSPLACER] Error deleting splitsplacer: {err}")
-                raise
+                raise TryAgain
 
     def collect_result(self):
         splitsplacer = self.get()
@@ -120,7 +126,7 @@ class SplitsPlacer:
 
         links_bandwidth = splitsplacer["status"]["remainingBandwidth"]
         creation_timestamp = splitsplacer["metadata"]["creationTimestamp"]
-        
+
         hops_count = {}
         for ru in splitsplacer["spec"]["rus"]:
             if "path" not in ru or len(ru["path"]) == 0:
@@ -138,13 +144,14 @@ class SplitsPlacer:
             else:
                 for pod in pods.items:
                     if pod.status.phase != "Running":
-                        logging.info(f"pod {pod.metadata.name} in state {pod.status.phase}")
+                        logging.info(
+                            f"pod {pod.metadata.name} in state {pod.status.phase}")
                         ready = False
                         break
             if ready:
                 logging.info("all pods running")
                 break
-            logging.info("waiting pods to be ready")            
+            logging.info("waiting pods to be ready")
             time.sleep(5)
 
         initialization_time = {}
@@ -161,7 +168,8 @@ class SplitsPlacer:
 
             initialization_time[pod.metadata.name] = timestamp
             init_time = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
-            creation_time = datetime.strptime(creation_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+            creation_time = datetime.strptime(
+                creation_timestamp, "%Y-%m-%dT%H:%M:%SZ")
             difference = (init_time - creation_time)
             duration.append(difference.total_seconds())
 
