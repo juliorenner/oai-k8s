@@ -25,17 +25,19 @@ def TestSplitsPlacer(exec_number: int, topology_name: str, resources_validation:
             splitsplacer.create()
             logging.info("waiting to be finished")
             splitsplacer.wait_to_be_finished()
+            
+            if resources_validation:
+                resources_validation and time.sleep(60)
+            else:
+                logging.info("collecting results")
+                result = splitsplacer.collect_result()
 
-            logging.info("collecting results")
-            result = splitsplacer.collect_result()
+                logging.info("outputing csv")
+                output_csv(result, topology_name, True, n)
 
-            logging.info("outputing csv")
-            output_csv(result, topology_name, True, n)
-
-            logging.info("outputing results")
-            output_result(result, topology_name, n)
+                logging.info("outputing results")
+                output_result(result, topology_name, n)
         finally:
-            resources_validation and time.sleep(60)
             logging.info("deleting splitsplacer")
             splitsplacer.delete()
             logging.info("waiting for clean up to finish")
@@ -51,16 +53,18 @@ def TestSplits(exec_number: int, template_file: str, resources_validation: bool)
             logging.info("creating splits")
             splits.create()
 
-            logging.info("collecting results")
-            result = splits.collect_result()
+            if resources_validation:
+                time.sleep(60)
+            else:
+                logging.info("collecting results")
+                result = splits.collect_result()
 
-            logging.info("outputing csv")
-            output_csv(result, template_file, False, n)
+                logging.info("outputing csv")
+                output_csv(result, template_file, False, n)
 
-            logging.info("outputing results")
-            output_result(result, template_file, n)
+                logging.info("outputing results")
+                output_result(result, template_file, n)
         finally:
-            resources_validation and time.sleep(60)
             logging.info("deleting splits")
             splits.delete()
             logging.info("waiting for clean up to finish")
