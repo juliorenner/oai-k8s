@@ -15,7 +15,7 @@ from utils.splits import Splits
 logging.basicConfig(level=logging.INFO)
 
 
-def TestSplitsPlacer(exec_number: int, topology_name: str, resources_validation: bool):
+def TestSplitsPlacer(exec_number: int, topology_name: str, resources_validation: bool=False):
 
     for n in range(exec_number):
         splitsplacer = SplitsPlacer(topology_name)
@@ -25,7 +25,7 @@ def TestSplitsPlacer(exec_number: int, topology_name: str, resources_validation:
             splitsplacer.create()
             logging.info("waiting to be finished")
             splitsplacer.wait_to_be_finished()
-            
+
             if resources_validation:
                 resources_validation and time.sleep(60)
             else:
@@ -44,7 +44,7 @@ def TestSplitsPlacer(exec_number: int, topology_name: str, resources_validation:
             wait_cleanup_finished()
 
 
-def TestSplits(exec_number: int, template_file: str, resources_validation: bool):
+def TestSplits(exec_number: int, template_file: str, resources_validation: bool=False):
 
     for n in range(exec_number):
         splits = Splits(template_file)
@@ -136,7 +136,7 @@ def output_csv(result: object, file_name: str, splitsPlacer: bool, exec_number: 
         output_line.append(exec_number)
         if splitsPlacer:
             output_line.append(result["state"])
-        
+
         output_line.append(result["average_initialization_time"])
         output_line.append(result["average_hops"])
         output_line.append(result["hops_count"])
@@ -156,10 +156,10 @@ def wait_cleanup_finished():
         pods = K8S.list_pods()
 
 
-def output_start_end_times():
+def output_start_end_times(prefix: str):
     o_file = open("{}/results/{}.txt".format(os.getcwd(), "times"), "a")
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S\n")
-    o_file.write(f"now: {now}")
+    o_file.write(f"{prefix}: {now}")
 
     o_file.close()
 
@@ -172,23 +172,31 @@ def main():
 
     args = parser.parse_args()
 
-    output_start_end_times()
+    output_start_end_times("start")
 
-    # for i in range(1, 7):
-    #     TestSplits(args.number_of_executions,
-    #                f"scheduler-{i*3}.yaml", args.resources_validation)
+    if args.resources_validation:
+        output_start_end_times("resources validation")
 
-    for i in range(1, 7):
-        TestSplitsPlacer(args.number_of_executions,
-                         f"bw-max-delay-min-{i*3}.yaml", args.resources_validation)
-    # for i in range(1, 7):
-    #     TestSplitsPlacer(args.number_of_executions,
-    #                      f"bw-min-link-delay-{i*3}.yaml", args.resources_validation)
-    # for i in range(1, 7):
-    #     TestSplitsPlacer(args.number_of_executions,
-    #                      f"bw-random-link-delay-{i*3}.yaml", args.resources_validation)
+        for i in range(1, 7):
+            TestSplits(args.number_of_executions,
+                    f"resources-{i}.yaml", args.resources_validation)        
 
-    output_start_end_times()
+        output_start_end_times("resources validation")
+    else:
+        for i in range(1, 7):
+            TestSplits(args.number_of_executions,
+                    f"scheduler-{i*3}.yaml")
+        for i in range(1, 7):
+            TestSplitsPlacer(args.number_of_executions,
+                            f"bw-max-delay-min-{i*3}.yaml")
+        for i in range(1, 7):
+            TestSplitsPlacer(args.number_of_executions,
+                            f"bw-min-link-delay-{i*3}.yaml")
+        for i in range(1, 7):
+            TestSplitsPlacer(args.number_of_executions,
+                            f"bw-random-link-delay-{i*3}.yaml")
+
+    output_start_end_times("end")
 
 
 main()
