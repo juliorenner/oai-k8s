@@ -177,8 +177,10 @@ def main():
     if args.resources_validation:
         output_start_end_times("resources validation - inicio")
         for i in range(1, 7):
+            output_start_end_times(f"validation of {i*3} splits started")
             TestSplits(args.number_of_executions,
-                    f"resources-{i}.yaml", args.resources_validation)        
+                    f"resources-{i}.yaml", args.resources_validation)
+            output_start_end_times(f"validation of {i*3} splits finished")
         output_start_end_times("resources validation - fim")
 
     for i in range(1, 7):
