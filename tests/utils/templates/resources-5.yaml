@@ -4,7 +4,7 @@ kind: Split
 metadata:
   name: "1"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   cuNode: node4
   duNode: node5
   ruNode: node6
@@ -14,7 +14,7 @@ kind: Split
 metadata:
   name: "2"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   cuNode: node4
   duNode: node5
   ruNode: node6
@@ -24,7 +24,7 @@ kind: Split
 metadata:
   name: "3"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   cuNode: node4
   duNode: node5
   ruNode: node6
@@ -34,7 +34,7 @@ kind: Split
 metadata:
   name: "4"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   cuNode: node4
   duNode: node5
   ruNode: node6
@@ -44,7 +44,7 @@ kind: Split
 metadata:
   name: "5"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   cuNode: node4
   duNode: node5
   ruNode: node6

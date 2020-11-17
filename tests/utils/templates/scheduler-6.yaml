@@ -4,7 +4,7 @@ kind: Split
 metadata:
   name: "1"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   ruNode: node6
 ---
 apiVersion: oai.unisinos/v1beta1
@@ -12,7 +12,7 @@ kind: Split
 metadata:
   name: "2"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   ruNode: node7
 ---
 apiVersion: oai.unisinos/v1beta1
@@ -20,7 +20,7 @@ kind: Split
 metadata:
   name: "3"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   ruNode: node8
 ---
 apiVersion: oai.unisinos/v1beta1
@@ -28,7 +28,7 @@ kind: Split
 metadata:
   name: "4"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   ruNode: node10
 ---
 apiVersion: oai.unisinos/v1beta1
@@ -36,7 +36,7 @@ kind: Split
 metadata:
   name: "5"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   ruNode: node9
 ---
 apiVersion: oai.unisinos/v1beta1
@@ -44,5 +44,5 @@ kind: Split
 metadata:
   name: "6"
 spec:
-  coreIP: 10.233.105.56
+  coreIP: 10.233.100.150
   ruNode: node11

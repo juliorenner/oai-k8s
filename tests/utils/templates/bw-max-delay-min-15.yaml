@@ -4,7 +4,7 @@ metadata:
   name: splitsplacer-sample
   namespace: oai
 spec:
-  coreIP: 10.233.105.76
+  coreIP: 10.233.100.150
   topologyConfig: "bw-max-delay-min"
   rus:
   - splitName: "1"
