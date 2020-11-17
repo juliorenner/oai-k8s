@@ -150,7 +150,7 @@ def output_csv(result: object, file_name: str, splitsPlacer: bool, exec_number: 
 def wait_cleanup_finished():
     pods = K8S.list_pods()
 
-    while len(pods.items) > 0:
+    while len(pods.items) > 1:
         time.sleep(5)
 
         pods = K8S.list_pods()
