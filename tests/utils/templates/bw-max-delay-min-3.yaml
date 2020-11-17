@@ -1,5 +1,5 @@
 apiVersion: oai.unisinos/v1beta1
-kind: RANPlacer
+kind: SplitsPlacer
 metadata:
   name: splitsplacer-sample
   namespace: oai
