@@ -150,7 +150,7 @@ def output_csv(result: object, file_name: str, splitsPlacer: bool, exec_number: 
 def wait_cleanup_finished():
     pods = K8S.list_pods()
 
-    while len(pods.items) > 1:
+    while len(pods.items) > 0:
         time.sleep(5)
 
         pods = K8S.list_pods()
@@ -177,7 +177,7 @@ def main():
     if args.resources_validation:
         output_start_end_times("resources validation - inicio")
         for i in range(1, 7):
-            output_start_end_times(f"validation of {i*3} splits started")
+            output_start_end_times(f"validation of {i} splits started")
             TestSplits(15,
                     f"resources-{i}.yaml", args.resources_validation)
             output_start_end_times(f"validation of {i*3} splits finished")

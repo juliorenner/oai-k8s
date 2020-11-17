@@ -34,7 +34,7 @@ class K8S:
     def list_pods():
         v1_client = K8S.get_core_v1_client()
         try:
-            return v1_client.list_namespaced_pod(constants.NAMESPACE_OAI)
+            return v1_client.list_namespaced_pod(constants.NAMESPACE_OAI, label_selector='split')
         except ApiException as err:
             logging.error(f"[K8S] Error listing pods: {err}")
             raise TryAgain
