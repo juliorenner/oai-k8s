@@ -18,10 +18,13 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/go-logr/logr"
+	"github.com/juliorenner/oai-k8s/operator/controllers/utils"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -46,6 +49,8 @@ const (
 	dockerRepositoryEnv = "DOCKER_REPOSITORY"
 
 	configPath = "/config"
+
+	resyncPeriod = 20 * time.Second
 )
 
 // SplitReconciler reconciles a Split object
@@ -77,13 +82,13 @@ func (r *SplitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 
 	if err := r.syncConfigMaps(split, log); err != nil {
 		log.Error(err, "error syncing config maps")
-		r.Recorder.Event(split, "Error", "configmaps", err.Error())
+		r.Recorder.Event(split, v1.EventTypeWarning, "configmaps", err.Error())
 		return ctrl.Result{}, err
 	}
 
-	if err := r.syncPods(split, log); err != nil {
+	if err := r.syncDeployments(split, log); err != nil {
 		log.Error(err, "error syncing pods")
-		r.Recorder.Event(split, "Error", "pods", err.Error())
+		r.Recorder.Event(split, v1.EventTypeWarning, "pods", err.Error())
 		return ctrl.Result{}, err
 	}
 
@@ -92,8 +97,8 @@ func (r *SplitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return ctrl.Result{}, err
 	}
 
-	r.Recorder.Event(split, "Normal", "Sync", "Synced successfully")
-	return ctrl.Result{Requeue: true, RequeueAfter: ResyncPeriod}, nil
+	r.Recorder.Event(split, v1.EventTypeNormal, "Sync", "Synced successfully")
+	return ctrl.Result{Requeue: true, RequeueAfter: resyncPeriod}, nil
 }
 
 func (r *SplitReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -112,7 +117,7 @@ func (r *SplitReconciler) syncStatus(instance *oaiv1beta1.Split) error {
 		instance.Status.CUIP = cuPod.Status.PodIP
 		if cuPod.Status.Phase != v1.PodRunning {
 			noErrors = false
-			r.Recorder.Event(instance, "Error", "CU", fmt.Sprintf("cu pod in state '%s'", cuPod.Status.Phase))
+			r.Recorder.Event(instance, v1.EventTypeWarning, "CU", fmt.Sprintf("cu pod in state '%s'", cuPod.Status.Phase))
 		}
 	}
 
@@ -124,18 +129,19 @@ func (r *SplitReconciler) syncStatus(instance *oaiv1beta1.Split) error {
 		instance.Status.DUIP = duPod.Status.PodIP
 		if duPod.Status.Phase != v1.PodRunning {
 			noErrors = false
-			r.Recorder.Event(instance, "Error", "DU", fmt.Sprintf("du pod in state '%s'", duPod.Status.Phase))
+			r.Recorder.Event(instance, v1.EventTypeWarning, "DU", fmt.Sprintf("du pod in state '%s'", duPod.Status.Phase))
 		}
 	}
 
 	ruPod := &v1.Pod{}
-	if exists, err := r.getDUPod(instance, ruPod); err != nil {
-		return fmt.Errorf("error getting cu pod: %w", err)
+	if exists, err := r.getRUPod(instance, ruPod); err != nil {
+		return fmt.Errorf("error getting ru pod: %w", err)
 	} else if exists {
+		instance.Status.RUNode = ruPod.Spec.NodeName
 		instance.Status.RUIP = ruPod.Status.PodIP
 		if ruPod.Status.Phase != v1.PodRunning {
 			noErrors = false
-			r.Recorder.Event(instance, "Error", "RU", fmt.Sprintf("ru pod in state '%s'", ruPod.Status.Phase))
+			r.Recorder.Event(instance, v1.EventTypeWarning, "RU", fmt.Sprintf("ru pod in state '%s'", ruPod.Status.Phase))
 		}
 	}
 
@@ -152,14 +158,14 @@ func (r *SplitReconciler) syncStatus(instance *oaiv1beta1.Split) error {
 	return nil
 }
 
-func (r *SplitReconciler) syncPods(instance *oaiv1beta1.Split, log logr.Logger) error {
+func (r *SplitReconciler) syncDeployments(instance *oaiv1beta1.Split, log logr.Logger) error {
 	for split := range Splits {
 		log.Info("syncing deployment", logSplitPieceKey, split)
 		splitPiece := SplitPiece(split)
 		objectKey := getSplitObjectKey(instance, splitPiece)
 
 		deployment := &appsv1.Deployment{}
-		exists, err := r.getDeployment(objectKey, deployment)
+		exists, err := utils.GetDeployment(r.Client, objectKey, deployment)
 		if err != nil {
 			return fmt.Errorf("error getting deployment %s: %w", objectKey.Name, err)
 		}
@@ -192,7 +198,7 @@ func getImageName(splitName SplitPiece) string {
 	case RU:
 		imageName = ueSoftModemImageName
 	}
-	return fmt.Sprintf("%s/%s:latest", dockerRepository, imageName)
+	return fmt.Sprintf("%s/%s:1", dockerRepository, imageName)
 }
 
 func (r *SplitReconciler) syncConfigMaps(instance *oaiv1beta1.Split, log logr.Logger) error {
@@ -217,7 +223,7 @@ func (r *SplitReconciler) syncTemplatesConfigMap(splitNamespace string, log logr
 		}
 
 		cmOperator := &v1.ConfigMap{}
-		exists, err := r.getConfigMap(operatorObjectKey, cmOperator)
+		exists, err := utils.GetConfigMap(r.Client, operatorObjectKey, cmOperator)
 		if err != nil || !exists {
 			return fmt.Errorf("error getting template config map %s from the operator namespace: %w",
 				operatorObjectKey.Name, err)
@@ -229,7 +235,7 @@ func (r *SplitReconciler) syncTemplatesConfigMap(splitNamespace string, log logr
 		}
 		// TODO: Use cache
 		cm := &v1.ConfigMap{}
-		exists, err = r.getConfigMap(objectKey, cm)
+		exists, err = utils.GetConfigMap(r.Client, objectKey, cm)
 		if err != nil {
 			return fmt.Errorf("error getting config map %s from namespace %s: %w", objectKey.Name, objectKey.Namespace, err)
 		}
@@ -266,7 +272,7 @@ func (r *SplitReconciler) syncValuesConfigMap(instance *oaiv1beta1.Split, log lo
 
 		log.Info("reconciling config map values for split", logSplitPieceKey, string(splitPiece))
 		cm := &v1.ConfigMap{}
-		exists, err := r.getConfigMap(objectKey, cm)
+		exists, err := utils.GetConfigMap(r.Client, objectKey, cm)
 		if err != nil {
 			return fmt.Errorf("error getting config map %s: %w", objectKey.String(), err)
 		}
@@ -462,7 +468,7 @@ func (r *SplitReconciler) getPod(instance *oaiv1beta1.Split, split SplitPiece, p
 	}
 
 	if len(podList.Items) > 1 {
-		return false, fmt.Errorf("incorrect number of pods, currently only 1 should be available")
+		return false, errors.New("incorrect number of pods, currently only 1 should be available")
 	}
 
 	if len(podList.Items) == 0 {
@@ -470,32 +476,6 @@ func (r *SplitReconciler) getPod(instance *oaiv1beta1.Split, split SplitPiece, p
 	}
 
 	*pod = podList.Items[0]
-	return true, nil
-}
-
-// TODO: Use Informer/Cache
-func (r *SplitReconciler) getDeployment(objectKey types.NamespacedName, pod *appsv1.Deployment) (bool, error) {
-	err := r.Get(context.Background(), objectKey, pod)
-	if err != nil {
-		if apierrors.IsNotFound(err) {
-			return false, nil
-		}
-		return false, fmt.Errorf("error getting deployment %s: %w", objectKey.String(), err)
-	}
-
-	return true, nil
-}
-
-// TODO: Use Informer/Cache
-func (r *SplitReconciler) getConfigMap(objectKey types.NamespacedName, cm *v1.ConfigMap) (bool, error) {
-	err := r.Get(context.Background(), objectKey, cm)
-	if err != nil {
-		if apierrors.IsNotFound(err) {
-			return false, nil
-		}
-		return false, fmt.Errorf("error getting config map %s: %w", objectKey.String(), err)
-	}
-
 	return true, nil
 }
 
@@ -561,6 +541,16 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 									Value: string(split),
 								},
 							},
+							Resources: v1.ResourceRequirements{
+								Limits: v1.ResourceList{
+									v1.ResourceMemory: *utils.NewQuantity(SplitMemoryLimitValue),
+									v1.ResourceCPU:    *utils.NewQuantity(SplitCPULimitValue),
+								},
+								Requests: v1.ResourceList{
+									v1.ResourceMemory: *utils.NewQuantity(SplitMemoryRequestValue),
+									v1.ResourceCPU:    *utils.NewQuantity(SplitCPURequestValue),
+								},
+							},
 						},
 					},
 					Volumes: []v1.Volume{
@@ -602,8 +592,18 @@ func getSplitDeployment(instance *oaiv1beta1.Split, split SplitPiece) *appsv1.De
 		},
 	}
 
-	if split == RU {
-		deployment.Spec.Template.Spec.NodeName = instance.Spec.RUNode
+	nodeName := ""
+	switch split {
+	case CU:
+		nodeName = instance.Spec.CUNode
+	case DU:
+		nodeName = instance.Spec.DUNode
+	case RU:
+		nodeName = instance.Spec.RUNode
+	}
+
+	if nodeName != "" {
+		deployment.Spec.Template.Spec.NodeName = nodeName
 	}
 
 	return deployment

@@ -3,5 +3,7 @@ kind: Split
 metadata:
   name: split-sample
 spec:
-  # Add fields here
-  foo: bar
+  coreIP: 10.233.105.56
+  ruNode: node2
+#  cuNode: node3
+#  duNode: node4

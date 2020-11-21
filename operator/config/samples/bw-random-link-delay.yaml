@@ -1,0 +1,311 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bw-random-link-delay
+  namespace: oai
+  labels:
+    "topology": "true"
+data:
+  topology: |
+    {
+        "nodes": {
+            "node16": {
+                "interfaces": ["eth0", "eth1"],
+                "core": true
+            },
+            "node14": {
+                "interfaces": ["eth0", "eth1", "eth2", "eth3"],
+                "hops": 1
+            },
+            "node15": {
+                "interfaces": ["eth0", "eth1", "eth2", "eth3", "eth4"],
+                "hops": 1
+            },
+            "node3": {
+                "interfaces": ["eth0", "eth1", "eth2", "eth3", "eth4"],
+                "hops": 2
+            },
+            "node4": {
+                "interfaces": ["eth0", "eth1", "eth2", "eth3"],
+                "hops": 2
+            },
+            "node5": {
+                "interfaces": ["eth0", "eth1"],
+                "hops": 2
+            },
+            "node6": {
+                "interfaces": ["eth0", "eth1"],
+                "hops": 3
+            },
+            "node7": {
+                "interfaces": ["eth0", "eth1"],
+                "hops": 3
+            },
+            "node8": {
+                "interfaces": ["eth0", "eth1"],
+                "hops": 3
+            },
+            "node9": {
+                "interfaces": ["eth0", "eth1"],
+                "hops": 4
+            },
+            "node10": {
+                "interfaces": ["eth0", "eth1", "eth2"],
+                "hops": 3
+            },
+            "node11": {
+                "interfaces": ["eth0", "eth1"],
+                "hops": 3
+            },
+            "node12": {
+                "interfaces": ["eth0", "eth1"],
+                "hops": 4
+            },
+            "node13": {
+                "interfaces": ["eth0", "eth1"],
+                "hops": 5
+            }
+        },
+        "links": {
+            "node6--node3": {
+                "linkCapacity": 300,
+                "linkDelay": 0.173825,
+                "source": {
+                    "node": "node6",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node3",
+                    "interface": "eth2"
+                }
+            },
+            "node6--node4": {
+                "linkCapacity": 450,
+                "linkDelay": 0.173825,
+                "source": {
+                    "node": "node6",
+                    "interface": "eth1"
+                },
+                "destination": {
+                    "node": "node4",
+                    "interface": "eth2"
+                }
+            },
+            "node7--node3": {
+                "linkCapacity": 600,
+                "linkDelay": 0.173825,
+                "source": {
+                    "node": "node7",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node3",
+                    "interface": "eth3"
+                }
+            },
+            "node7--node5": {
+                "linkCapacity": 450,
+                "linkDelay": 0.173825,
+                "source": {
+                    "node": "node7",
+                    "interface": "eth1"
+                },
+                "destination": {
+                    "node": "node5",
+                    "interface": "eth2"
+                }
+            },
+            "node8--node3": {
+                "linkCapacity": 1200,
+                "linkDelay": 0.173825,
+                "source": {
+                    "node": "node8",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node3",
+                    "interface": "eth4"
+                }
+            },
+            "node9--node8": {
+                "linkCapacity": 300,
+                "linkDelay": 0.16145,
+                "source": {
+                    "node": "node9",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node8",
+                    "interface": "eth1"
+                }
+            },
+            "node10--node9": {
+                "linkCapacity": 600,
+                "linkDelay": 0.16145,
+                "source": {
+                    "node": "node10",
+                    "interface": "eth1"
+                },
+                "destination": {
+                    "node": "node9",
+                    "interface": "eth1"
+                }
+            },
+            "node10--node4": {
+                "linkCapacity": 1500,
+                "linkDelay": 0.173825,
+                "source": {
+                    "node": "node10",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node4",
+                    "interface": "eth3"
+                }
+            },
+            "node11--node4": {
+                "linkCapacity": 450,
+                "linkDelay": 0.173825,
+                "source": {
+                    "node": "node11",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node4",
+                    "interface": "eth4"
+                }
+            },
+            "node11--node5": {
+                "linkCapacity": 1200,
+                "linkDelay": 0.173825,
+                "source": {
+                    "node": "node11",
+                    "interface": "eth1"
+                },
+                "destination": {
+                    "node": "node5",
+                    "interface": "eth3"
+                }
+            },
+            "node12--node11": {
+                "linkCapacity": 300,
+                "linkDelay": 0.16145,
+                "source": {
+                    "node": "node12",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node11",
+                    "interface": "eth2"
+                }
+            },
+            "node13--node12": {
+                "linkCapacity": 300,
+                "linkDelay": 0.16145,
+                "source": {
+                    "node": "node13",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node12",
+                    "interface": "eth1"
+                }
+            },
+            "node3--node14": {
+                "linkCapacity": 600,
+                "linkDelay": 0.219875,
+                "source": {
+                    "node": "node3",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node14",
+                    "interface": "eth1"
+                }
+            },
+            "node3--node15": {
+                "linkCapacity": 1200,
+                "linkDelay": 0.219875,
+                "source": {
+                    "node": "node3",
+                    "interface": "eth1"
+                },
+                "destination": {
+                    "node": "node15",
+                    "interface": "eth1"
+                }
+            },
+            "node4--node14": {
+                "linkCapacity": 1500,
+                "linkDelay": 0.219875,
+                "source": {
+                    "node": "node4",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node14",
+                    "interface": "eth2"
+                }
+            },
+            "node4--node15": {
+                "linkCapacity": 1500,
+                "linkDelay": 0.219875,
+                "source": {
+                    "node": "node4",
+                    "interface": "eth1"
+                },
+                "destination": {
+                    "node": "node15",
+                    "interface": "eth2"
+                }
+            },
+            "node5--node14": {
+                "linkCapacity": 600,
+                "linkDelay": 0.219875,
+                "source": {
+                    "node": "node5",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node14",
+                    "interface": "eth3"
+                }
+            },
+            "node5--node15": {
+                "linkCapacity": 1200,
+                "linkDelay": 0.219875,
+                "source": {
+                    "node": "node5",
+                    "interface": "eth1"
+                },
+                "destination": {
+                    "node": "node15",
+                    "interface": "eth3"
+                }
+            },
+            "node14--node16": {
+                "linkCapacity": 1200,
+                "linkDelay": 2,
+                "source": {
+                    "node": "node14",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node16",
+                    "interface": "eth0"
+                }
+            },
+            "node15--node16": {
+                "linkCapacity": 600,
+                "linkDelay": 2,
+                "source": {
+                    "node": "node15",
+                    "interface": "eth0"
+                },
+                "destination": {
+                    "node": "node16",
+                    "interface": "eth1"
+                }
+            }
+        }
+    }

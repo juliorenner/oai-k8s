@@ -1,0 +1,33 @@
+apiVersion: oai.unisinos/v1beta1
+kind: SplitsPlacer
+metadata:
+  name: splitsplacer-sample
+  namespace: oai
+spec:
+  coreIP: 10.233.100.150
+  topologyConfig: "bw-max-delay-min"
+  rus:
+  - splitName: "1"
+    ruNode: "node6"
+  - splitName: "2"
+    ruNode: "node7"
+  - splitName: "3"
+    ruNode: "node8"
+  - splitName: "4"
+    ruNode: "node9"
+  - splitName: "5"
+    ruNode: "node10"
+  - splitName: "6"
+    ruNode: "node11"
+  - splitName: "7"
+    ruNode: "node12"
+  - splitName: "8"
+    ruNode: "node13"
+  - splitName: "9"
+    ruNode: "node6"
+  - splitName: "10"
+    ruNode: "node7"
+  - splitName: "11"
+    ruNode: "node8"
+  - splitName: "12"
+    ruNode: "node9"

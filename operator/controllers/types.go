@@ -1,21 +1,26 @@
 package controllers
 
 import (
-	"time"
-
+	"github.com/juliorenner/oai-k8s/operator/controllers/utils"
 	v1 "k8s.io/api/core/v1"
 )
 
 const (
-	ResyncPeriod = 20 * time.Second
-
 	CU SplitPiece = "cu"
 	DU SplitPiece = "du"
 	RU SplitPiece = "ru"
 
-	CUTemplateConfigMapName = "operator-cu-template"
-	DUTemplateConfigMapName = "operator-du-template"
-	RUTemplateConfigMapName = "operator-ru-template"
+	CUTemplateConfigMapName     = "operator-cu-template"
+	DUTemplateConfigMapName     = "operator-du-template"
+	RUTemplateConfigMapName     = "operator-ru-template"
+	DisaggregationConfigMapName = "operator-disaggregations"
+
+	DisaggregationKey = "disaggregations"
+
+	SplitMemoryLimitValue   = "512Mi"
+	SplitMemoryRequestValue = "256Mi"
+	SplitCPULimitValue      = "500m"
+	SplitCPURequestValue    = "150m"
 
 	operatorNamespace          = "operator-system"
 	cuConfigMapContentTemplate = "upfaddress: %s\nlocaladdress: %s\nsouthaddress: %s\n"
@@ -24,7 +29,6 @@ const (
 )
 
 type SplitPiece string
-type StringSet map[string]struct{}
 
 type cuContent struct {
 	UPF          string
@@ -43,12 +47,12 @@ type ruContent struct {
 	NorthAddress string
 }
 
-type port struct {
+type Port struct {
 	number   int32
 	protocol v1.Protocol
 }
 
-var SplitPorts = map[SplitPiece][]port{
+var SplitPorts = map[SplitPiece][]Port{
 	CU: {{501, v1.ProtocolUDP}, {601, v1.ProtocolUDP}, {2152, v1.ProtocolUDP},
 		{36412, v1.ProtocolUDP}, {36422, v1.ProtocolUDP}, {30923, v1.ProtocolUDP},
 		{37659, v1.ProtocolTCP}},
@@ -66,31 +70,8 @@ var TemplateConfigMaps = map[SplitPiece]string{
 	RU: RUTemplateConfigMapName,
 }
 
-var Empty struct{}
-
-var Splits = NewStringSet(
+var Splits = utils.NewStringSet(
 	string(CU),
 	string(RU),
 	string(DU),
 )
-
-func NewStringSet(values ...string) StringSet {
-	stringSet := make(StringSet)
-	for _, v := range values {
-		stringSet[v] = Empty
-	}
-	return stringSet
-}
-
-// Add adds new values to the set.
-func (s *StringSet) Add(items ...string) {
-	for _, item := range items {
-		(*s)[item] = Empty
-	}
-}
-
-// Has returns true if item is in the Set
-func (s StringSet) Has(item string) bool {
-	_, contained := s[item]
-	return contained
-}

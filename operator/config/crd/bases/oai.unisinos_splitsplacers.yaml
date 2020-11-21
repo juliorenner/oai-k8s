@@ -1,0 +1,107 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.5
+  creationTimestamp: null
+  name: splitsplacers.oai.unisinos
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.state
+    name: STATUS
+    type: string
+  group: oai.unisinos
+  names:
+    kind: SplitsPlacer
+    listKind: SplitsPlacerList
+    plural: splitsplacers
+    singular: splitsplacer
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: SplitsPlacer is the Schema for the splitsplacers API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: SplitsPlacerSpec defines the desired state of SplitsPlacer
+          properties:
+            coreIP:
+              description: CoreIP to where the splits created will point to.
+              type: string
+            retrigger:
+              description: Retrigger placement
+              type: boolean
+            rus:
+              description: RUs
+              items:
+                description: RUPosition defines the position and the name of the RU
+                  from one service chain. Based on this definition a Split will be
+                  created.
+                properties:
+                  cuNode:
+                    description: CUNode will be fulfilled by the split placer algorithm
+                    type: string
+                  disaggregation:
+                    description: Disaggregation will be fulfilled by the split placer
+                      algorithm
+                    type: string
+                  duNode:
+                    description: DUNode will be fulfilled by the split placer algorithm
+                    type: string
+                  path:
+                    description: Path will be fulfilled by the split placer algorithm
+                    items:
+                      type: string
+                    type: array
+                  ruNode:
+                    type: string
+                  splitName:
+                    type: string
+                type: object
+              type: array
+            topologyConfig:
+              description: Topology refers to the config map name where the topology
+                is described
+              type: string
+          type: object
+        status:
+          description: SplitsPlacerStatus defines the observed state of SplitsPlacer
+          properties:
+            allocatedRUs:
+              type: integer
+            allocationTime:
+              type: string
+            remainingBandwidth:
+              additionalProperties:
+                type: string
+              type: object
+            state:
+              type: string
+          type: object
+      type: object
+  version: v1beta1
+  versions:
+  - name: v1beta1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

@@ -31,7 +31,7 @@ var _ = Describe("split controller unit tests", func() {
 		Entry("ru resource name", RU, "ru-test"),
 	)
 
-	DescribeTable("getSplitObjectKey", func(split SplitPiece, expectedNamespace, expectedName string) {
+	DescribeTable("getObjectKey", func(split SplitPiece, expectedNamespace, expectedName string) {
 		objectKey := getSplitObjectKey(instance, split)
 		Expect(objectKey.Namespace).To(Equal(expectedNamespace))
 		Expect(objectKey.Name).To(Equal(expectedName))
