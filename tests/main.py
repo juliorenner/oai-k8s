@@ -187,17 +187,17 @@ def main():
         TestSplitsPlacer(args.number_of_executions,
                         f"bw-max-delay-min-{i*3}.yaml")
 
-    # for i in range(1, 7):
-    #     TestSplitsPlacer(args.number_of_executions,
-    #                     f"bw-random-link-delay-{i*3}.yaml")
+    for i in range(1, 7):
+        TestSplitsPlacer(args.number_of_executions,
+                        f"bw-random-link-delay-{i*3}.yaml")
 
-    # for i in range(1, 7):
-    #     TestSplitsPlacer(args.number_of_executions,
-    #                     f"bw-min-link-delay-{i*3}.yaml")
+    for i in range(1, 7):
+        TestSplitsPlacer(args.number_of_executions,
+                        f"bw-min-link-delay-{i*3}.yaml")
 
-    # for i in range(1, 7):
-    #     TestSplits(args.number_of_executions,
-    #             f"scheduler-{i*3}.yaml")
+    for i in range(1, 7):
+        TestSplits(args.number_of_executions,
+                f"scheduler-{i*3}.yaml")
 
     output_start_end_times("end")
 
