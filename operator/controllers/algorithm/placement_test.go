@@ -54,7 +54,7 @@ func TestPlacementAlgorithm(t *testing.T) {
 
 	testCases := []struct {
 		name                 string
-		rus                  []*oaiv1beta1.RUPosition
+		rus                  []*oaiv1beta1.ChainPosition
 		isValid              bool
 		isErrorExpected      bool
 		numberOfAllocatedRUs int
@@ -102,10 +102,10 @@ func TestPlacementAlgorithm(t *testing.T) {
 	}
 }
 
-func generateRUs(nodes ...string) []*oaiv1beta1.RUPosition {
-	var rus []*oaiv1beta1.RUPosition
+func generateRUs(nodes ...string) []*oaiv1beta1.ChainPosition {
+	var rus []*oaiv1beta1.ChainPosition
 	for i, node := range nodes {
-		rus = append(rus, &oaiv1beta1.RUPosition{
+		rus = append(rus, &oaiv1beta1.ChainPosition{
 			SplitName: fmt.Sprintf("split%d", i),
 			RUNode:    node,
 		})

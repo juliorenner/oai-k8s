@@ -17,8 +17,8 @@ const (
 )
 
 type Disaggregation interface {
-	Validate(ru *oaiv1beta1.RUPosition) (bool, *position)
-	AllocateResources(ru *oaiv1beta1.RUPosition) error
+	Validate(ru *oaiv1beta1.ChainPosition) (bool, *position)
+	AllocateResources(ru *oaiv1beta1.ChainPosition) error
 }
 
 type PlacementBFS struct {
@@ -83,7 +83,7 @@ func NewPlacementBFS(topology *oaiv1beta1.Topology, disaggregations map[string]*
 		requestedResources: requestedResources, remainingBandwidth: remainingBandwidth, log: log}
 }
 
-func (p *PlacementBFS) Place(rus []*oaiv1beta1.RUPosition) (bool, error) {
+func (p *PlacementBFS) Place(rus []*oaiv1beta1.ChainPosition) (bool, error) {
 	if err := p.allocateRUsResources(rus); err != nil {
 		return false, fmt.Errorf("validation of RU placement failed: %w", err)
 	}
@@ -114,7 +114,7 @@ func (p *PlacementBFS) GetRemainingBandwidth() map[string]*utils.Link {
 	return p.remainingBandwidth
 }
 
-func fulfillRU(ru *oaiv1beta1.RUPosition, finalPos *position) {
+func fulfillRU(ru *oaiv1beta1.ChainPosition, finalPos *position) {
 	ru.DUNode = finalPos.duNodeName
 	ru.CUNode = finalPos.cuNodeName
 	ru.Path = finalPos.path
@@ -154,7 +154,7 @@ func (p *PlacementBFS) findPathsTo(nodeToFind string) [][]string {
 	return pathsToNode
 }
 
-func (p *PlacementBFS) allocateRUsResources(splitsPlacer []*oaiv1beta1.RUPosition) error {
+func (p *PlacementBFS) allocateRUsResources(splitsPlacer []*oaiv1beta1.ChainPosition) error {
 	for _, ru := range splitsPlacer {
 		topologyNode := p.nodes[ru.RUNode]
 		if err := topologyNode.AllocateResources(p.requestedResources.Memory, p.requestedResources.CPU,

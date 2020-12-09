@@ -11,8 +11,8 @@ import (
 type StringSet map[string]struct{}
 
 type Placement interface {
-	// Place should fulfill each RUPosition according to the implement algorithm results
-	Place([]*oaiv1beta1.RUPosition) (bool, error)
+	// Place should fulfill each ChainPosition according to the implement algorithm results
+	Place([]*oaiv1beta1.ChainPosition) (bool, error)
 }
 
 var Empty struct{}
