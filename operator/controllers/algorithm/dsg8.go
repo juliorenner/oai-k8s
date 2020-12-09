@@ -27,7 +27,7 @@ func NewDsg8(nodes map[string]*utils.Node, requestedResources *utils.RequestedRe
 	}
 }
 
-func (d *disaggregation8) Validate(ru *oaiv1beta1.RUPosition, paths [][]string) (bool, *position) {
+func (d *disaggregation8) Validate(ru *oaiv1beta1.ChainPosition, paths [][]string) (bool, *position) {
 	validation := &pathsValidation{
 		paths:     paths,
 		ruNode:    ru.RUNode,
@@ -127,7 +127,7 @@ func (d *disaggregation8) validateNetwork(path []string, cuNode, duNode string, 
 	return true, nil
 }
 
-func (d *disaggregation8) AllocateResources(ru *oaiv1beta1.RUPosition) error {
+func (d *disaggregation8) AllocateResources(ru *oaiv1beta1.ChainPosition) error {
 	// allocate resources from nodes
 	du := d.nodes[ru.DUNode]
 	if err := du.AllocateResources(d.requestedResources.Memory, d.requestedResources.CPU, d.log); err != nil {

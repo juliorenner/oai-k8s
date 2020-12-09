@@ -47,7 +47,7 @@ type SplitsPlacerSpec struct {
 
 	// RUs
 	// +kubebuilder:validation:Required
-	RUs []*RUPosition `json:"rus,omitempty"`
+	RUs []*ChainPosition `json:"rus,omitempty"`
 	// CoreIP to where the splits created will point to.
 	// +kubebuilder:validation:Required
 	CoreIP string `json:"coreIP,omitempty"`
@@ -57,9 +57,9 @@ type SplitsPlacerSpec struct {
 	Retrigger bool `json:"retrigger,omitempty"`
 }
 
-// RUPosition defines the position and the name of the RU from one service chain. Based on this definition a Split
+// ChainPosition defines the position and the name of the RU from one service chain. Based on this definition a Split
 // will be created.
-type RUPosition struct {
+type ChainPosition struct {
 	SplitName string `json:"splitName,omitempty"`
 	RUNode    string `json:"ruNode,omitempty"`
 	// CUNode will be fulfilled by the split placer algorithm

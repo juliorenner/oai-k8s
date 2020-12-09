@@ -210,7 +210,7 @@ func (r *SplitsPlacerReconciler) syncSplits(splitsPlacer *oaiv1beta1.SplitsPlace
 	return nil
 }
 
-func (r *SplitsPlacerReconciler) getSplitTemplate(ru *oaiv1beta1.RUPosition, namespace string,
+func (r *SplitsPlacerReconciler) getSplitTemplate(ru *oaiv1beta1.ChainPosition, namespace string,
 	coreIP string) *oaiv1beta1.Split {
 	return &oaiv1beta1.Split{
 		ObjectMeta: metav1.ObjectMeta{
@@ -292,7 +292,7 @@ func (r *SplitsPlacerReconciler) place(splitsPlacer *oaiv1beta1.SplitsPlacer, to
 
 	success, err := topologyGraph.Place(splitsPlacer.Spec.RUs)
 
-	var notAllocatedRUs []*oaiv1beta1.RUPosition
+	var notAllocatedRUs []*oaiv1beta1.ChainPosition
 	for _, ru := range splitsPlacer.Spec.RUs {
 		if ru.DUNode == "" || ru.CUNode == "" {
 			notAllocatedRUs = append(notAllocatedRUs, ru)
